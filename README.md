@@ -44,7 +44,7 @@ All data is recorded in UTC time. This is so multiple receivers in different tim
 Currently it only updates the registration (N-Number) for USA aircraft, as they are assigned 1:1, and I don't have any info on other countries. I don't do an Internet lookup, as most sites don't allow it.
 
 ##### Port 30003 Compatibility
-Alas, there are some pretty crummy Port 30003 implementations out there. ```Planeplotter``` for instance doesn't output the Booleans (alert, ident, emergency, etc). These are always ```0```. Others are worse.
+Alas, there are some pretty crummy Port 30003 implementations out there. ```Planeplotter``` for instance doesn't output the Booleans (alert, ident, emergency, etc). These are always ```0```. It's a real piece of crap. Others are worse.
 
 The program to get is ```dump1090``` which along with a $20 receiver will suck data out of the atmosphere and drop it into your database.
 
