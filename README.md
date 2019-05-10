@@ -27,7 +27,7 @@ Put the config file in the main directory and you are ready to go after you set 
 
 If you comment out the GUI off config, a GUI will be displayed and it basically shows the data counts being received by the Basestation TCP port. Otherwise this program does nothing but work in the background storing the data.
 
-![My image](https://raw.githubusercontent.com/a-la-mode/ADSBMySQL/master/gui.png)
+![My image](https://raw.githubusercontent.com/srsampson/ADSBMySQL/master/gui.png)
 
 The database is designed so that as new targets come in, their Mode-S ICAO number is added, and the port data is recorded. Sooner or later this aircraft will land or fade-out, and the database will move it to the history file. If it pops up again, then it is issued a new flight number. The data in the ```target``` table then, is the current data. When those targets fade or land, they are deleted from this table, and moved to the ```targethistory``` table.
 
@@ -37,25 +37,25 @@ There is also a ```metrics``` table that shows how much data has been processed 
 
 Commandline: ```java -jar ADSBMySQL.jar 2>&1 >>errorlog.txt &``` on Linux and just double click the jar file on Windows.
 
-#####Time and Date Stamps
+##### Time and Date Stamps
 All data is recorded in UTC time. This is so multiple receivers in different time zones all record to the same time reference. Although, the times may differ if system are not synchronized to GPS.
 
-#####Aircraft Registration
+##### Aircraft Registration
 Currently it only updates the registration (N-Number) for USA aircraft, as they are assigned 1:1, and I don't have any info on other countries. I don't do an Internet lookup, as most sites don't allow it.
 
-#####Port 30003 Compatibility
+##### Port 30003 Compatibility
 Alas, there are some pretty crummy Port 30003 implementations out there. ```Planeplotter``` for instance doesn't output the Booleans (alert, ident, emergency, etc). These are always ```0```. Others are worse.
 
 The program to get is ```dump1090``` which along with a $20 receiver will suck data out of the atmosphere and drop it into your database.
 
-#####Mode-S Beast
+##### Mode-S Beast
 I am currently using a Mode-S Beast receiver with the dump1090 program (input to port 30004). One thing to keep in mind, is that dump1090 doesn't configure the switches on the Beast. Therefore you should make sure you are feeding the right data. The right data being all the DF (not set for DF17 only for example) and not so important, but usefull, is Mode-A/C enable, as dump1090 can decode these squawks, and maybe in the future they can be used in the database. Right now there is no Mode-A/C use.
 
-#####Dump1090
+##### Dump1090
 By using dump1090 you also gain the capability of connecting it to the FlightAware Multilateration (MLAT). This is pretty neat, in that by connecting you will be sharing data with others nearby, and able to track Mode-S aircraft that are not sending out their position. You have to modify the dump1090 to allow MLAT being sent out the Port 30003 (very simple change), and with that you will get more data to put in your database.
 
-#####Sample Database View
+##### Sample Database View
 Here's a sample of what the data might look like.
 
-![My image](https://raw.githubusercontent.com/a-la-mode/ADSBMySQL/master/screenshot.png)
+![My image](https://raw.githubusercontent.com/srsampson/ADSBMySQL/master/screenshot.png)
 
