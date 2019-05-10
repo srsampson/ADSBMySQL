@@ -52,7 +52,7 @@ The program to get is ```dump1090``` which along with a $20 receiver will suck d
 I am currently using a Mode-S Beast receiver with the dump1090 program (input to port 30004). One thing to keep in mind, is that dump1090 doesn't configure the switches on the Beast. Therefore you should make sure you are feeding the right data. The right data being all the DF (not set for DF17 only for example) and not so important, but usefull, is Mode-A/C enable, as dump1090 can decode these squawks, and maybe in the future they can be used in the database. Right now there is no Mode-A/C use.
 
 ##### Dump1090
-By using dump1090 you also gain the capability of connecting it to the FlightAware Multilateration (MLAT). This is pretty neat, in that by connecting you will be sharing data with others nearby, and able to track Mode-S aircraft that are not sending out their position. You have to modify the dump1090 to allow MLAT being sent out the Port 30003 (very simple change), and with that you will get more data to put in your database.
+By using dump1090 you also gain the capability of connecting it to the FlightAware Multilateration (MLAT). This is pretty neat, in that by connecting you will be sharing data with others nearby, and able to track Mode-S aircraft that are not sending out their position. You have to modify the dump1090 to allow MLAT being sent out the Port 30003 (very simple change), and with that you will get more data to put in your database. Note: I don't feed FlightAware anymore, so not sure of the latest changes there.
 
 ##### Sample Database View
 Here's a sample of what the data might look like.
