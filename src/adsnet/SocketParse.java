@@ -387,7 +387,7 @@ public final class SocketParse extends Thread {
                          */
                         if ((id = getTrackReportsVal(acid)) == (Track) null) {
                             try {
-                                id = new Track(config);
+                                id = new Track();
                             } catch (Exception e) {
                                 System.err.println("SocketParse::run exception: Unable to allocate a Track " + e.toString());
                                 break;
@@ -519,7 +519,7 @@ public final class SocketParse extends Thread {
                                 if (!temp.equals("")) {
                                     latitude = Float.parseFloat(temp);
                                 } else {
-                                    latitude = -9999.0F;
+                                    latitude = -999.0F;
                                 }
 
                                 temp = token[LONGITUDE].trim();
@@ -527,7 +527,7 @@ public final class SocketParse extends Thread {
                                 if (!temp.equals("")) {
                                     longitude = Float.parseFloat(temp);
                                 } else {
-                                    longitude = -9999.0F;
+                                    longitude = -999.0F;
                                 }
 
                                 temp = token[ALERT].trim();

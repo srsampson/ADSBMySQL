@@ -37,10 +37,8 @@ public final class Track {
     private boolean updatePosition;
     //
     private final ZuluMillis zulu;        // UTC time generator
-    private final Config conf;
 
-    public Track(Config c) {
-        this.conf = c;
+    public Track() {
         this.zulu = new ZuluMillis();
         this.acid = "";
         this.registration = "";

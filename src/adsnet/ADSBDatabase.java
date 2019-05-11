@@ -307,14 +307,14 @@ public final class ADSBDatabase extends Thread {
                         if (!trk.getRegistration().equals("")) {
                             try {
 
-                                queryString = String.format("SELECT count(1) AS CS FROM modestable"
+                                queryString = String.format("SELECT count(1) AS RG FROM modestable"
                                         + " WHERE acid='%s'", acid);
 
                                 query = db1.createStatement();
                                 rs = query.executeQuery(queryString);
 
                                 if (rs.next() == true) {
-                                    exists = rs.getInt("CS");
+                                    exists = rs.getInt("RG");
                                 } else {
                                     exists = 0;
                                 }
