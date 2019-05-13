@@ -1,15 +1,15 @@
 CREATE DATABASE  IF NOT EXISTS `adsb` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `adsb`;
--- MySQL dump 10.13  Distrib 5.5.47, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.16, for Linux (x86_64)
 --
--- Host: 127.0.0.1    Database: adsb
+-- Host: nas    Database: adsb
 -- ------------------------------------------------------
--- Server version	5.5.47-0ubuntu0.14.04.1
+-- Server version	5.7.26-0ubuntu0.18.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+ SET NAMES utf8 ;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -23,7 +23,7 @@ USE `adsb`;
 
 DROP TABLE IF EXISTS `callsign`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `callsign` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `acid` char(6) NOT NULL,
@@ -40,12 +40,21 @@ CREATE TABLE `callsign` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `callsign`
+--
+
+LOCK TABLES `callsign` WRITE;
+/*!40000 ALTER TABLE `callsign` DISABLE KEYS */;
+/*!40000 ALTER TABLE `callsign` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `metrics`
 --
 
 DROP TABLE IF EXISTS `metrics`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `metrics` (
   `seq_num` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `utcupdate` varchar(45) NOT NULL,
@@ -62,12 +71,21 @@ CREATE TABLE `metrics` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `metrics`
+--
+
+LOCK TABLES `metrics` WRITE;
+/*!40000 ALTER TABLE `metrics` DISABLE KEYS */;
+/*!40000 ALTER TABLE `metrics` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `modestable`
 --
 
 DROP TABLE IF EXISTS `modestable`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `modestable` (
   `acid` char(6) NOT NULL,
   `utcdetect` varchar(45) NOT NULL,
@@ -83,12 +101,21 @@ CREATE TABLE `modestable` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `modestable`
+--
+
+LOCK TABLES `modestable` WRITE;
+/*!40000 ALTER TABLE `modestable` DISABLE KEYS */;
+/*!40000 ALTER TABLE `modestable` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `target`
 --
 
 DROP TABLE IF EXISTS `target`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `target` (
   `flight_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Flight ID',
   `radar_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Radar ID that generated this target report',
@@ -121,6 +148,15 @@ CREATE TABLE `target` (
   CONSTRAINT `FK_acid` FOREIGN KEY (`acid`) REFERENCES `modestable` (`acid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1 COMMENT='Active Target Tracks';
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `target`
+--
+
+LOCK TABLES `target` WRITE;
+/*!40000 ALTER TABLE `target` DISABLE KEYS */;
+/*!40000 ALTER TABLE `target` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -169,7 +205,7 @@ DELIMITER ;
 
 DROP TABLE IF EXISTS `targetecho`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `targetecho` (
   `record_num` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Flight ID',
   `flight_id` bigint(20) unsigned NOT NULL,
@@ -187,12 +223,21 @@ CREATE TABLE `targetecho` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `targetecho`
+--
+
+LOCK TABLES `targetecho` WRITE;
+/*!40000 ALTER TABLE `targetecho` DISABLE KEYS */;
+/*!40000 ALTER TABLE `targetecho` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `targethistory`
 --
 
 DROP TABLE IF EXISTS `targethistory`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `targethistory` (
   `record_num` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `flight_id` bigint(20) unsigned NOT NULL DEFAULT '0',
@@ -225,6 +270,23 @@ CREATE TABLE `targethistory` (
   CONSTRAINT `FK_targethistory_acid` FOREIGN KEY (`acid`) REFERENCES `modestable` (`acid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1 COMMENT='Targets No Longer Active';
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `targethistory`
+--
+
+LOCK TABLES `targethistory` WRITE;
+/*!40000 ALTER TABLE `targethistory` DISABLE KEYS */;
+/*!40000 ALTER TABLE `targethistory` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping events for database 'adsb'
+--
+
+--
+-- Dumping routines for database 'adsb'
+--
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -235,4 +297,4 @@ CREATE TABLE `targethistory` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-04-16  7:47:26
+-- Dump completed on 2019-05-10 20:26:56
