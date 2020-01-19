@@ -7,18 +7,7 @@ This TCP port does not have any fancy data being output, it is just the most com
 The database is updated by a configurable (1 to 13 seconds) time. Aircraft transmit their position every second, but in most cases it isn't necessary to have that resolution. By default I set 3 seconds, which is adequate for me. In the Track Display program, it reads the database every second, which if you set in 13 seconds here, not a lot of its queries will have new data, but reading is not as database intensive as writing. Every write will update several tables.
 
 This update time can be considered a simulated Revolutions Per Minute (RPM) of a rotating radar antenna. A long range radar usually updates every 10 to 12 seconds (6 or 5 RPM), while an airport radar will update every 2.5 seconds (24 RPM). A surface to air missile system will update every second (for comparisons).
-```
-EDIT: I'm redesigning the computed heading and groundspeed algorithm.
-Basically moving it out of the display tracker, and into the database proper.
-That way if you have 10 displays up, you don't have 10 applications computing these values.
 
-Plus it will allow me to create a more sophisticated design.
-Basically the problem is, that not all ADS-B targets transmit heading and speed.
-FedEx mostly, although they seem to be upgrading more and more transponders.
-
-What I do is use the echo positions to calculate the targets speed, since I can easily
-measure the distance and the time between each echo.
-```
 Included is a config file that the program reads on startup. This contains the database table name, and the login credentials. There is also an export of the database so you can initialize the database.
 
 Basically you create a directory to put the ```ADSBMySQL.jar``` file in. Then create a ```lib``` directory and put the database ODBC connector file in there. The program was compiled using this particular file, so don't upgrade it without recompiling (I use Netbeans IDE).
