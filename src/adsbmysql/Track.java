@@ -1,4 +1,4 @@
-package adsnet;
+package adsbmysql;
 
 /*
  * This is the vehicle track object
@@ -31,15 +31,15 @@ public final class Track {
     private boolean hadEmergency;
     private boolean hadSPI;
     //
+    private final long currentTime;
+    //
     private long updateTime;        // zulu time object was updated
     private long updatePositionTime;// zulu time object lat/lon position was updated
     private boolean updated;        // set on update, cleared on sent
     private boolean updatePosition;
-    //
-    private final ZuluMillis zulu;        // UTC time generator
 
-    public Track() {
-        this.zulu = new ZuluMillis();
+    public Track(long ct) {
+        this.currentTime = ct;
         this.acid = "";
         this.registration = "";
         this.groundSpeed = -999.0F;
@@ -54,7 +54,7 @@ public final class Track {
         this.callsign = "";
         this.trackQuality = 0;
         this.updatePositionTime = 0L;
-        this.updateTime = zulu.getUTCTime();
+        this.updateTime = currentTime;
         this.alert = this.emergency = this.spi = this.hadAlert
                 = this.hadEmergency = this.hadSPI = hijack = comm_out = false;
         this.updated = updatePosition = false;
@@ -375,7 +375,7 @@ public final class Track {
         if (changed) {
             incrementTrackQuality();
             this.updated = this.updatePosition = true;
-            this.updatePositionTime = zulu.getUTCTime();
+            this.updatePositionTime = currentTime;
         }
     }
 

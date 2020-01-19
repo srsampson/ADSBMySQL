@@ -1,12 +1,13 @@
-package adsnet;
+package adsbmysql;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.swing.JFrame;
 
 /*
  * A Class to display a GUI window.
  */
-public final class GUI extends javax.swing.JFrame {
+public final class GUI extends JFrame {
 
     private static final long RATE = 800L;              // .8 second
     //
@@ -81,7 +82,7 @@ public final class GUI extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("ADSBMySQL 1.8");
+        setTitle("ADSBMySQL 1.90");
         setBounds(new java.awt.Rectangle(300, 300, 0, 0));
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {

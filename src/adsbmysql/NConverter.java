@@ -1,4 +1,4 @@
-package adsnet;
+package adsbmysql;
 
 public final class NConverter {
 

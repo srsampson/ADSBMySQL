@@ -1,6 +1,7 @@
-package adsnet;
+package adsbmysql;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
@@ -49,9 +50,7 @@ public final class SocketParse extends Thread {
     private final ConcurrentHashMap<String, Track> trackReports;
     //
     private final Config config;
-    /**
-     * The socket data connection
-     */
+    //
     private InputStream input;
     private final NConverter reg;
     //
@@ -78,14 +77,14 @@ public final class SocketParse extends Thread {
     /*
      * Class constructor
      */
-    public SocketParse(Config c) {
+    public SocketParse(Config c, ZuluMillis z) {
         this.config = c;
-        this.zulu = new ZuluMillis();
+        this.zulu = z;
 
         trackReports = new ConcurrentHashMap<>();
         reg = new NConverter();
 
-        openSocket();
+        openSBSSocket();
         resetCount();
 
         socketReceive = new Thread(this);
@@ -105,12 +104,12 @@ public final class SocketParse extends Thread {
     /**
      * A method to open a buffered socket connection to a TCP server
      */
-    private void openSocket() {
+    private void openSBSSocket() {
         try {
             connection = new Socket(config.getSocketHost(), config.getSocketPort());
             input = connection.getInputStream();
             line = new BufferedReader(new InputStreamReader(input));
-        } catch (Exception e) {
+        } catch (IOException e) {
             EOF = true;
         }
 
@@ -129,9 +128,8 @@ public final class SocketParse extends Thread {
             line.close();
             input.close();
             connection.close();
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.err.println("SocketParse::close exception " + e.toString());
-            System.exit(-1);
         }
     }
 
@@ -289,11 +287,9 @@ public final class SocketParse extends Thread {
     public synchronized List<Track> getTrackUpdatedTable() {
         List<Track> result = new ArrayList<>();
 
-        for (Track id : trackReports.values()) {
-            if (id.getUpdated() == true) {
-                result.add(id);
-            }
-        }
+        trackReports.values().stream().filter((id) -> (id.getUpdated() == true)).forEachOrdered((id) -> {
+            result.add(id);
+        });
 
         return result;
     }
@@ -311,7 +307,6 @@ public final class SocketParse extends Thread {
 
         try {
             trk = (Track) trackReports.get(acid);
-            return trk;
         } catch (NullPointerException e) {
             System.err.println("SocketParse::getTrackReportsVal Exception during get " + e.toString());
         }
@@ -378,7 +373,7 @@ public final class SocketParse extends Thread {
                     currentTime = zulu.getUTCTime();
 
                     if (data.startsWith("MSG")) {
-                        token = data.split(",");   // Tokenize the data input line
+                        token = data.split(",", -2);   // Tokenize the data input line
                         type = Integer.parseInt(token[1].trim());
                         acid = token[HEXIDENT].trim();
 
@@ -387,7 +382,7 @@ public final class SocketParse extends Thread {
                          */
                         if ((id = getTrackReportsVal(acid)) == (Track) null) {
                             try {
-                                id = new Track();
+                                id = new Track(currentTime);
                             } catch (Exception e) {
                                 System.err.println("SocketParse::run exception: Unable to allocate a Track " + e.toString());
                                 break;
@@ -399,23 +394,13 @@ public final class SocketParse extends Thread {
 
                         switch (type) {
                             case 8:
-                                /*
-                                 * We might get an Array exception here, as
-                                 * this is the final parameter, and some bad
-                                 * implementations of the protocol sometimes
-                                 * sends a null.
-                                 */
-                                try {
-                                    temp = token[GROUND].trim();
+                                temp = token[GROUND].trim();
 
-                                    if (!temp.equals("")) {
-                                        gnd = Integer.parseInt(temp);
+                                if (!temp.equals("")) {
+                                    gnd = Integer.parseInt(temp);
 
-                                        isOnGround = (gnd == -1);
-                                    } else {
-                                        isOnGround = false;
-                                    }
-                                } catch (Exception eg) {
+                                    isOnGround = (gnd == -1);
+                                } else {
                                     isOnGround = false;
                                 }
 
@@ -477,23 +462,13 @@ public final class SocketParse extends Thread {
                                     longitude = -999.0F;
                                 }
 
-                                /*
-                                 * We might get an Array exception here, as
-                                 * this is the final parameter, and some bad
-                                 * implementations of the protocol sometimes
-                                 * sends a null.
-                                 */
-                                try {
-                                    temp = token[GROUND].trim();
+                                temp = token[GROUND].trim();
 
-                                    if (!temp.equals("")) {
-                                        gnd = Integer.parseInt(temp);
+                                if (!temp.equals("")) {
+                                    gnd = Integer.parseInt(temp);
 
-                                        isOnGround = (gnd == -1);
-                                    } else {
-                                        isOnGround = false;
-                                    }
-                                } catch (Exception eg) {
+                                    isOnGround = (gnd == -1);
+                                } else {
                                     isOnGround = false;
                                 }
 
@@ -554,23 +529,13 @@ public final class SocketParse extends Thread {
                                     spi = false;
                                 }
 
-                                /*
-                                 * We might get an Array exception here, as
-                                 * this is the final parameter, and some bad
-                                 * implementations of the protocol sometimes
-                                 * sends a null.
-                                 */
-                                try {
-                                    temp = token[GROUND].trim();
+                                temp = token[GROUND].trim();
 
-                                    if (!temp.equals("")) {
-                                        gnd = Integer.parseInt(temp);
+                                if (!temp.equals("")) {
+                                    gnd = Integer.parseInt(temp);
 
-                                        isOnGround = (gnd == -1);
-                                    } else {
-                                        isOnGround = false;
-                                    }
-                                } catch (Exception eg) {
+                                    isOnGround = (gnd == -1);
+                                } else {
                                     isOnGround = false;
                                 }
 
@@ -599,19 +564,11 @@ public final class SocketParse extends Thread {
                                     groundTrack = -999.0F;
                                 }
 
-                                /*
-                                 * We might get an Array exception here if a
-                                 * bad protocol leaves this null
-                                 */
-                                try {
-                                    temp = token[VRATE].trim();
+                                temp = token[VRATE].trim();
 
-                                    if (!temp.equals("")) {
-                                        verticalRate = Integer.parseInt(temp);
-                                    } else {
-                                        verticalRate = -9999;
-                                    }
-                                } catch (Exception ev) {
+                                if (!temp.equals("")) {
+                                    verticalRate = Integer.parseInt(temp);
+                                } else {
                                     verticalRate = -9999;
                                 }
 
@@ -645,22 +602,12 @@ public final class SocketParse extends Thread {
                                     spi = false;
                                 }
 
-                                /*
-                                 * We might get an Array exception here, as
-                                 * this is the final parameter, and some bad
-                                 * implementations of the protocol sometimes
-                                 * sends a null.
-                                 */
-                                try {
-                                    temp = token[GROUND].trim();
+                                temp = token[GROUND].trim();
 
-                                    if (!temp.equals("")) {
-                                        gnd = Integer.parseInt(temp);
-                                        isOnGround = (gnd == -1);
-                                    } else {
-                                        isOnGround = false;
-                                    }
-                                } catch (Exception eg) {
+                                if (!temp.equals("")) {
+                                    gnd = Integer.parseInt(temp);
+                                    isOnGround = (gnd == -1);
+                                } else {
                                     isOnGround = false;
                                 }
 
@@ -712,23 +659,13 @@ public final class SocketParse extends Thread {
                                     spi = false;
                                 }
 
-                                /*
-                                 * We might get an Array exception here, as
-                                 * this is the final parameter, and some bad
-                                 * implementations of the protocol sometimes
-                                 * sends a null.
-                                 */
-                                try {
-                                    temp = token[GROUND].trim();
+                                temp = token[GROUND].trim();
 
-                                    if (!temp.equals("")) {
-                                        gnd = Integer.parseInt(temp);
+                                if (!temp.equals("")) {
+                                    gnd = Integer.parseInt(temp);
 
-                                        isOnGround = (gnd == -1);
-                                    } else {
-                                        isOnGround = false;
-                                    }
-                                } catch (Exception eg) {
+                                    isOnGround = (gnd == -1);
+                                } else {
                                     isOnGround = false;
                                 }
 
@@ -749,23 +686,13 @@ public final class SocketParse extends Thread {
                                     altitude = -9999;
                                 }
 
-                                /*
-                                 * We might get an Array exception here, as
-                                 * this is the final parameter, and some bad
-                                 * implementations of the protocol sometimes
-                                 * sends a null.
-                                 */
-                                try {
-                                    temp = token[GROUND].trim();
+                                temp = token[GROUND].trim();
 
-                                    if (!temp.equals("")) {
-                                        gnd = Integer.parseInt(temp);
+                                if (!temp.equals("")) {
+                                    gnd = Integer.parseInt(temp);
 
-                                        isOnGround = (gnd == -1);
-                                    } else {
-                                        isOnGround = false;
-                                    }
-                                } catch (Exception eg) {
+                                    isOnGround = (gnd == -1);
+                                } else {
                                     isOnGround = false;
                                 }
 
@@ -780,9 +707,9 @@ public final class SocketParse extends Thread {
 
                 try {
                     Thread.sleep(0, 1);
-                } catch (Exception e) {
+                } catch (InterruptedException e) {
                 }
-            } catch (Exception ex) {
+            } catch (IOException | NumberFormatException ex) {
             }
         }
     }

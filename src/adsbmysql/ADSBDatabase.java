@@ -1,4 +1,4 @@
-package adsnet;
+package adsbmysql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -33,10 +33,11 @@ public final class ADSBDatabase extends Thread {
     private Timer timer;
     private TimerTask task;
 
-    public ADSBDatabase(Config cf, SocketParse k) {
+    public ADSBDatabase(Config cf, SocketParse k, ZuluMillis z) {
         this.con = k;
         this.zulu = new ZuluMillis();
         this.config = cf;
+        this.zulu = z;
         this.radarid = cf.getRadarID();
         this.radarscan = (long) cf.getRadarScanTime() * 1000L;
         this.acid = "";
@@ -54,7 +55,7 @@ public final class ADSBDatabase extends Thread {
          * the executable JAR file of this program.
          */
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.Driver");
             db1 = DriverManager.getConnection(config.getDatabaseURL(), config.getDatabaseLogin(), config.getDatabasePassword());
         } catch (ClassNotFoundException | SQLException e) {
             System.err.println("ADSBDatabase Fatal: Unable to open database 1 " + config.getDatabaseURL());
@@ -85,6 +86,10 @@ public final class ADSBDatabase extends Thread {
         }
     }
 
+    public Connection getDBConnection() {
+        return db2;
+    }
+    
     @Override
     public void run() {
         List<Track> table;
