@@ -284,7 +284,7 @@ public final class ADSBDatabase extends Thread {
                                     + "(SELECT flight_id FROM target WHERE acid='%s' && radar_id=%d),"
                                     + "%d,"
                                     + "'%s',"
-                                    + "'%s',"
+                                    + "%d,"
                                     + "%f,"
                                     + "%f,"
                                     + "%d,"
@@ -293,7 +293,7 @@ public final class ADSBDatabase extends Thread {
                                     radarid,
                                     radarid,
                                     acid,
-                                    timeStamp,
+                                    time,
                                     trk.getLatitude(),
                                     trk.getLongitude(),
                                     trk.getAltitude(),
