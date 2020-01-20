@@ -9,6 +9,9 @@ public final class Track {
     private String registration;    // N-Number if USA registered
     private int trackQuality;       // 0 - 9 quality value (9 means Firm)
     private int verticalRate;       // fps
+    private int verticalTrend;      // -1 = down, 0 = level, 1 = up
+    private int[] trend = new int[10];
+    private int trend_el = 0;
     private float groundSpeed;      // kts
     private float groundTrack;      // deg
     private float groundSpeedComputed;
@@ -222,7 +225,35 @@ public final class Track {
         if (this.verticalRate != val) {
             this.verticalRate = val;
             this.updated = true;
+            
+            int vt = 0;
+
+            if (val > 192) {
+                trend[trend_el] = 1;
+            } else if (val < -192) {
+                trend[trend_el] = -1;
+            } else {
+                trend[trend_el] = 0;
+            }
+
+            trend_el = (trend_el + 1) % 10;
+
+            for (int i = 0; i < 10; i++) {
+                vt += trend[i];
+            }
+
+            if (vt > 0) {
+                verticalTrend = 1;
+            } else if (vt < 0) {
+                verticalTrend = -1;
+            } else {
+                verticalTrend = 0;
+            }
         }
+    }
+
+    public synchronized int getVerticalTrend() {
+        return this.verticalTrend;
     }
 
     /**
@@ -295,7 +326,7 @@ public final class Track {
         }
 
         if (this.verticalRate != val3) {
-            this.verticalRate = val3;
+            this.setVerticalRate(val3);
             changed = true;
         }
 

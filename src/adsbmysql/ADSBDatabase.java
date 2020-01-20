@@ -279,6 +279,7 @@ public final class ADSBDatabase extends Thread {
                                     + "latitude,"
                                     + "longitude,"
                                     + "altitude,"
+                                    + "verticalTrend,"
                                     + "onground"
                                     + ") VALUES ("
                                     + "(SELECT flight_id FROM target WHERE acid='%s' && radar_id=%d),"
@@ -287,6 +288,7 @@ public final class ADSBDatabase extends Thread {
                                     + "%d,"
                                     + "%f,"
                                     + "%f,"
+                                    + "%d,"
                                     + "%d,"
                                     + "%d)",
                                     acid,
@@ -297,6 +299,7 @@ public final class ADSBDatabase extends Thread {
                                     trk.getLatitude(),
                                     trk.getLongitude(),
                                     trk.getAltitude(),
+                                    trk.getVerticalTrend(),
                                     ground);
 
                             try {
