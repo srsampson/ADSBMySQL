@@ -34,7 +34,7 @@ Alas, there are some pretty crummy Port 30003 implementations out there. ```Plan
 sudo beast-splitter --serial /dev/beast --fixed-baud 3000000 --listen 30005:R
 ~/modesmixer2 --location 34.382901:-98.423287 --outServer msg:30003 --inConnect 127.0.0.1:30005
 ```
-You can also use:
+You can also use ```modesdeco2``` with the RTL SDR receiver:
 ```
 nohup sudo ~/modesdeco2 --location 34.382901:-98.423287 --msg 30003&
 ```
