@@ -276,44 +276,49 @@ public final class ADSBDatabase extends Thread {
                         if (trk.getUpdatePosition() == true) {
                             trk.setUpdatePosition(false);
 
-                            queryString = String.format("INSERT INTO targetecho ("
-                                    + "flight_id,"
-                                    + "radar_id,"
-                                    + "acid,"
-                                    + "utcdetect,"
-                                    + "latitude,"
-                                    + "longitude,"
-                                    + "altitude,"
-                                    + "verticalTrend,"
-                                    + "onground"
-                                    + ") VALUES ("
-                                    + "(SELECT flight_id FROM target WHERE acid='%s' && radar_id=%d),"
-                                    + "%d,"
-                                    + "'%s',"
-                                    + "%d,"
-                                    + "%f,"
-                                    + "%f,"
-                                    + "%d,"
-                                    + "%d,"
-                                    + "%d)",
-                                    acid,
-                                    radarid,
-                                    radarid,
-                                    acid,
-                                    time,
-                                    trk.getLatitude(),
-                                    trk.getLongitude(),
-                                    trk.getAltitude(),
-                                    trk.getVerticalTrend(),
-                                    ground);
+                            // Safety check, we don't want NULL's
+                            // TODO: Figure out why we get those
+                            
+                            if ((trk.getLatitude() != -999.0F) && (trk.getLongitude() != -999.0F)) {
+                                queryString = String.format("INSERT INTO targetecho ("
+                                        + "flight_id,"
+                                        + "radar_id,"
+                                        + "acid,"
+                                        + "utcdetect,"
+                                        + "latitude,"
+                                        + "longitude,"
+                                        + "altitude,"
+                                        + "verticalTrend,"
+                                        + "onground"
+                                        + ") VALUES ("
+                                        + "(SELECT flight_id FROM target WHERE acid='%s' && radar_id=%d),"
+                                        + "%d,"
+                                        + "'%s',"
+                                        + "%d,"
+                                        + "%f,"
+                                        + "%f,"
+                                        + "%d,"
+                                        + "%d,"
+                                        + "%d)",
+                                        acid,
+                                        radarid,
+                                        radarid,
+                                        acid,
+                                        time,
+                                        trk.getLatitude(),
+                                        trk.getLongitude(),
+                                        trk.getAltitude(),
+                                        trk.getVerticalTrend(),
+                                        ground);
 
-                            try {
-                                query = db1.createStatement();
-                                query.executeUpdate(queryString);
-                                query.close();
-                            } catch (SQLException e) {
-                                query.close();
-                                System.out.println("ADSBDatabase::run query targetecho Error: " + queryString + " " + e.getMessage());
+                                try {
+                                    query = db1.createStatement();
+                                    query.executeUpdate(queryString);
+                                    query.close();
+                                } catch (SQLException e) {
+                                    query.close();
+                                    System.out.println("ADSBDatabase::run query targetecho Error: " + queryString + " " + e.getMessage());
+                                }
                             }
                         }
 
@@ -460,11 +465,11 @@ public final class ADSBDatabase extends Thread {
              */
             update = String.format(
                     "INSERT INTO targethistory (flight_id,radar_id,acid,utcdetect,utcfadeout,altitude,groundSpeed,"
-                    + "groundTrack,gsComputed,gtComputed,callsign,latitude,longitude,verticalRate,squawk,alert,emergency,spi,onground,"
+                    + "groundTrack,gsComputed,gtComputed,callsign,latitude,longitude,verticalRate,verticalTrend,squawk,alert,emergency,spi,onground,"
                     + "hijack,comm_out,hadAlert,hadEmergency,hadSPI) SELECT flight_id,radar_id,acid,"
                     + "CONCAT(FROM_UNIXTIME(utcdetect/1000),\".\",CAST(MOD(utcdetect,1000) AS CHAR)),"
                     + "CONCAT(FROM_UNIXTIME(utcupdate/1000),\".\",CAST(MOD(utcupdate,1000) AS CHAR)),"
-                    + "altitude,groundSpeed,groundTrack,gsComputed,gtComputed,callsign,latitude,longitude,verticalRate,squawk,alert,"
+                    + "altitude,groundSpeed,groundTrack,gsComputed,gtComputed,callsign,latitude,longitude,verticalRate,verticalTrend,squawk,alert,"
                     + "emergency,spi,onground,hijack,comm_out,hadAlert,hadEmergency,hadSPI FROM target WHERE target.utcupdate <= %d",
                     timeout);
 
