@@ -52,6 +52,7 @@ public final class Track {
         this.latitude = -999.0F;
         this.longitude = -999.0F;
         this.verticalRate = -9999;
+        this.verticalTrend = 0;
         this.altitude = -9999;
         this.squawk = -9999;
         this.callsign = "";

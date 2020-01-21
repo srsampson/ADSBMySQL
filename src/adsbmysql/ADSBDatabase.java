@@ -160,6 +160,7 @@ public final class ADSBDatabase extends Thread {
                                     + "latitude=NULLIF(%f, -999.0),"
                                     + "longitude=NULLIF(%f, -999.0),"
                                     + "verticalRate=NULLIF(%d, -9999),"
+                                    + "verticalTrend=%d,"
                                     + "quality=%d,"
                                     + "squawk=NULLIF(%d, -9999),"
                                     + "alert=%d,"
@@ -182,6 +183,7 @@ public final class ADSBDatabase extends Thread {
                                     trk.getLatitude(),
                                     trk.getLongitude(),
                                     trk.getVerticalRate(),
+                                    trk.getVerticalTrend(),
                                     trk.getTrackQuality(),
                                     trk.getSquawk(),
                                     trk.getAlert() ? 1 : 0,
@@ -210,6 +212,7 @@ public final class ADSBDatabase extends Thread {
                                     + "latitude,"
                                     + "longitude,"
                                     + "verticalRate,"
+                                    + "verticalTrend,"
                                     + "quality,"
                                     + "squawk,"
                                     + "alert,"
@@ -230,7 +233,8 @@ public final class ADSBDatabase extends Thread {
                                     + "NULLIF(%f, -999.0),"
                                     + "NULLIF(%f, -999.0),"
                                     + "NULLIF(%d, -9999),"
-                                    + "NULLIF(%d, -9999),"
+                                    + "%d,"
+                                    + "%d,"
                                     + "NULLIF(%d, -9999),"
                                     + "%d,%d,%d,%d,%d,%d,%d,%d,%d)",
                                     acid,
@@ -246,6 +250,7 @@ public final class ADSBDatabase extends Thread {
                                     trk.getLatitude(),
                                     trk.getLongitude(),
                                     trk.getVerticalRate(),
+                                    trk.getVerticalTrend(),
                                     trk.getTrackQuality(),
                                     trk.getSquawk(),
                                     trk.getAlert() ? 1 : 0,

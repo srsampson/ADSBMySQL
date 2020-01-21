@@ -128,6 +128,7 @@ CREATE TABLE `target` (
   `latitude` double DEFAULT NULL,
   `longitude` double DEFAULT NULL,
   `verticalRate` int DEFAULT NULL,
+  `verticalTrend` int DEFAULT NULL,
   `quality` int DEFAULT NULL,
   `squawk` int unsigned DEFAULT NULL,
   `alert` tinyint(1) NOT NULL DEFAULT '0',
