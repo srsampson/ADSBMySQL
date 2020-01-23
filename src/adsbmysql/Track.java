@@ -10,8 +10,8 @@ public final class Track {
     private int trackQuality;       // 0 - 9 quality value (9 means Firm)
     private int verticalRate;       // fps
     private int verticalTrend;      // -1 = down, 0 = level, 1 = up
-    private int[] trend = new int[10];
-    private int trend_el = 0;
+    private final int[] trend = new int[10];
+    private static int trend_el = 0;
     private float groundSpeed;      // kts
     private float groundTrack;      // deg
     private float groundSpeedComputed;
@@ -254,7 +254,7 @@ public final class Track {
     }
 
     public synchronized int getVerticalTrend() {
-        return this.verticalTrend;
+        return verticalTrend;
     }
 
     /**
