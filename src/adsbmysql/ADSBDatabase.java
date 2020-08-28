@@ -55,17 +55,17 @@ public final class ADSBDatabase extends Thread {
          * the executable JAR file of this program.
          */
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
             db1 = DriverManager.getConnection(config.getDatabaseURL(), config.getDatabaseLogin(), config.getDatabasePassword());
-        } catch (ClassNotFoundException | SQLException e) {
-            System.err.println("ADSBDatabase Fatal: Unable to open database 1 " + config.getDatabaseURL());
+        } catch (Exception e) {
+            System.err.println("ADSBDatabase Fatal: Unable to open database 1 " + config.getDatabaseURL() + " " + e.getMessage());
             System.exit(-1);
         }
 
         try {
             db2 = DriverManager.getConnection(config.getDatabaseURL(), config.getDatabaseLogin(), config.getDatabasePassword());
         } catch (SQLException e3) {
-            System.err.println("ADSBDatabase Fatal: Unable to open database 2 " + config.getDatabaseURL());
+            System.err.println("ADSBDatabase Fatal: Unable to open database 2 " + config.getDatabaseURL() + " " + e3.getMessage());
             System.exit(-1);
         }
 
@@ -93,11 +93,9 @@ public final class ADSBDatabase extends Thread {
     @Override
     public void run() {
         List<Track> table;
-        Timestamp sqlTime = new Timestamp(0);
         ResultSet rs = null;
         String queryString = "";
         int ground, exists;
-        String timeStamp;
         long time;
 
         try {
@@ -108,8 +106,6 @@ public final class ADSBDatabase extends Thread {
                 if (!table.isEmpty()) {
                     for (Track trk : table) {
                         time = trk.getUpdateTime();
-                        sqlTime.setTime(time);
-                        timeStamp = sqlTime.toString();
                         trk.setUpdated(false);
 
                         acid = trk.getAircraftID();
@@ -151,7 +147,7 @@ public final class ADSBDatabase extends Thread {
 
                         if (exists > 0) {         // target exists
                             queryString = String.format("UPDATE target SET utcupdate=%d,"
-                                    + "altitude=%d,"
+                                    + "altitude=NULLIF(%d, -9999),"
                                     + "groundSpeed=NULLIF(%.1f, -999.0),"
                                     + "groundTrack=NULLIF(%.1f, -999.0),"
                                     + "gsComputed=NULLIF(%.1f, -999.0),"
@@ -224,7 +220,8 @@ public final class ADSBDatabase extends Thread {
                                     + "hadAlert,"
                                     + "hadEmergency,"
                                     + "hadSPI) "
-                                    + "VALUES ('%s',%d,%d,%d,%d,"
+                                    + "VALUES ('%s',%d,%d,%d,"
+                                    + "NULLIF(%d, -9999),"
                                     + "NULLIF(%.1f,-999.0),"
                                     + "NULLIF(%.1f,-999.0),"
                                     + "NULLIF(%.1f,-999.0),"
@@ -297,7 +294,7 @@ public final class ADSBDatabase extends Thread {
                                         + "%d,"
                                         + "%f,"
                                         + "%f,"
-                                        + "%d,"
+                                        + "NULLIF(%d, -9999),"
                                         + "%d,"
                                         + "%d)",
                                         acid,
@@ -347,9 +344,9 @@ public final class ADSBDatabase extends Thread {
                             }
 
                             if (exists > 0) {
-                                queryString = String.format("UPDATE modestable SET acft_reg='%s',utcupdate='%s' WHERE acid='%s'",
+                                queryString = String.format("UPDATE modestable SET acft_reg='%s',utcupdate=%d WHERE acid='%s'",
                                         trk.getRegistration(),
-                                        timeStamp,
+                                        time,
                                         acid);
 
                                 query = db1.createStatement();
@@ -384,20 +381,20 @@ public final class ADSBDatabase extends Thread {
                             }
 
                             if (exists > 0) {
-                                queryString = String.format("UPDATE callsign SET utcupdate='%s' WHERE callsign='%s' && acid='%s' && radar_id=%d",
-                                        timeStamp, trk.getCallsign(), acid, radarid);
+                                queryString = String.format("UPDATE callsign SET utcupdate=%d WHERE callsign='%s' && acid='%s' && radar_id=%d",
+                                        time, trk.getCallsign(), acid, radarid);
                             } else {
                                 queryString = String.format("INSERT INTO callsign (callsign,flight_id,radar_id,acid,"
                                         + "utcdetect,utcupdate) VALUES ('%s',"
                                         + "(SELECT flight_id FROM target WHERE acid='%s' && radar_id=%d),"
-                                        + "%d,'%s','%s','%s')",
+                                        + "%d,'%s',%d,%d)",
                                         trk.getCallsign(),
                                         acid,
                                         radarid,
                                         radarid,
                                         acid,
-                                        timeStamp,
-                                        timeStamp);
+                                        time,
+                                        time);
                             }
 
                             query = db1.createStatement();
@@ -434,11 +431,9 @@ public final class ADSBDatabase extends Thread {
      */
     class TimeoutThread extends TimerTask {
 
-        protected Timestamp sqlTime = new Timestamp(0L);
-        protected String timeStamp;
-        protected long time;
-        protected long timeout;
-        protected int min;
+        private long time;
+        private long timeout;
+        private final int min;
 
         /**
          * Clean up the target table
@@ -456,9 +451,6 @@ public final class ADSBDatabase extends Thread {
             time = zulu.getUTCTime();
             timeout = time - (min * 60L * 1000L);    // timeout in milliseconds
 
-            sqlTime.setTime(time);
-            timeStamp = sqlTime.toString();
-
             /*
              * This also converts the timestamp to SQL format, as the history is
              * probably not going to need any further computations.
@@ -466,9 +458,7 @@ public final class ADSBDatabase extends Thread {
             update = String.format(
                     "INSERT INTO targethistory (flight_id,radar_id,acid,utcdetect,utcfadeout,altitude,groundSpeed,"
                     + "groundTrack,gsComputed,gtComputed,callsign,latitude,longitude,verticalRate,verticalTrend,squawk,alert,emergency,spi,onground,"
-                    + "hijack,comm_out,hadAlert,hadEmergency,hadSPI) SELECT flight_id,radar_id,acid,"
-                    + "CONCAT(FROM_UNIXTIME(utcdetect/1000),\".\",CAST(MOD(utcdetect,1000) AS CHAR)),"
-                    + "CONCAT(FROM_UNIXTIME(utcupdate/1000),\".\",CAST(MOD(utcupdate,1000) AS CHAR)),"
+                    + "hijack,comm_out,hadAlert,hadEmergency,hadSPI) SELECT flight_id,radar_id,acid,utcdetect,utcupdate,"
                     + "altitude,groundSpeed,groundTrack,gsComputed,gtComputed,callsign,latitude,longitude,verticalRate,verticalTrend,squawk,alert,"
                     + "emergency,spi,onground,hijack,comm_out,hadAlert,hadEmergency,hadSPI FROM target WHERE target.utcupdate <= %d",
                     timeout);
@@ -493,11 +483,11 @@ public final class ADSBDatabase extends Thread {
              * counts to zero, while the other thread has just incremented the
              * value.
              */
-            update = String.format("INSERT INTO metrics SET utcupdate='%s',"
+            update = String.format("INSERT INTO metrics SET utcupdate=%d,"
                     + "callsignCount=%d,surfaceCount=%d,"
                     + "airborneCount=%d,velocityCount=%d,"
                     + "altitudeCount=%d,squawkCount=%d,trackCount=%d,radar_id=%d",
-                    timeStamp, con.getCallsignMetric(), con.getSurfaceMetric(), con.getAirborneMetric(),
+                    time, con.getCallsignMetric(), con.getSurfaceMetric(), con.getAirborneMetric(),
                     con.getVelocityMetric(), con.getAltitudeMetric(), con.getSquawkMetric(),
                     con.getTrackMetric(), radarid);
 

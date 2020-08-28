@@ -27,8 +27,8 @@ DROP TABLE IF EXISTS `callsign`;
 CREATE TABLE `callsign` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `acid` char(6) NOT NULL,
-  `utcdetect` varchar(45) NOT NULL,
-  `utcupdate` varchar(45) NOT NULL,
+  `utcdetect` bigint NOT NULL COMMENT 'UTC Time detected',
+  `utcupdate` bigint NOT NULL COMMENT 'UTC Time updated',
   `callsign` char(8) NOT NULL COMMENT 'Transmitted Callsign',
   `flight_id` bigint unsigned NOT NULL,
   `radar_id` int unsigned NOT NULL,
@@ -49,8 +49,8 @@ DROP TABLE IF EXISTS `metar`;
 CREATE TABLE `metar` (
   `metar_id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `airport` varchar(45) NOT NULL,
-  `utcupdate` varchar(45) NOT NULL,
-  `utcObserve` varchar(45) NOT NULL,
+  `utcupdate` bigint NOT NULL COMMENT 'UTC Time updated',
+  `utcObserve` varchar(45) NOT NULL COMMENT 'Observation time string',
   `temp` int NOT NULL,
   `dewpoint` int NOT NULL,
   `humidity` int NOT NULL,
@@ -72,7 +72,7 @@ DROP TABLE IF EXISTS `metrics`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `metrics` (
   `seq_num` int unsigned NOT NULL AUTO_INCREMENT,
-  `utcupdate` varchar(45) NOT NULL,
+  `utcupdate` bigint NOT NULL COMMENT 'UTC Time updated',
   `callsignCount` bigint unsigned NOT NULL,
   `surfaceCount` bigint unsigned NOT NULL,
   `airborneCount` bigint unsigned NOT NULL,
@@ -94,8 +94,8 @@ DROP TABLE IF EXISTS `modestable`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `modestable` (
   `acid` char(6) NOT NULL,
-  `utcdetect` varchar(45) NOT NULL,
-  `utcupdate` varchar(45) NOT NULL,
+  `utcdetect` bigint NOT NULL COMMENT 'UTC Time detected',
+  `utcupdate` bigint NOT NULL COMMENT 'UTC Time updated',
   `acft_reg` varchar(45) DEFAULT NULL,
   `acft_model` varchar(45) DEFAULT NULL,
   `acft_operator` varchar(45) DEFAULT NULL,
@@ -128,7 +128,7 @@ CREATE TABLE `target` (
   `latitude` double DEFAULT NULL,
   `longitude` double DEFAULT NULL,
   `verticalRate` int DEFAULT NULL,
-  `verticalTrend` int DEFAULT NULL,
+  `verticalTrend` tinyint(1) NOT NULL DEFAULT '0',
   `quality` int DEFAULT NULL,
   `squawk` int unsigned DEFAULT NULL,
   `alert` tinyint(1) NOT NULL DEFAULT '0',
@@ -156,12 +156,11 @@ CREATE TABLE `target` (
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `insertmodes` BEFORE INSERT ON `target` FOR EACH ROW BEGIN
-  SET @triggertime = CONCAT(FROM_UNIXTIME(NEW.utcdetect/1000),".",CAST(MOD(NEW.utcdetect,1000) AS CHAR));
   SET @tcount = (SELECT count(1) FROM modestable WHERE acid=NEW.acid);
   IF @tcount > 0 THEN
-    UPDATE modestable SET utcupdate=@triggertime WHERE acid=NEW.acid;
+    UPDATE modestable SET utcupdate=NEW.utcdetect WHERE acid=NEW.acid;
   ELSE
-    INSERT INTO modestable (acid,utcdetect,utcupdate) VALUES (NEW.acid, @triggertime, @triggertime);
+    INSERT INTO modestable (acid,utcdetect,utcupdate) VALUES (NEW.acid, NEW.utcdetect, NEW.utcdetect);
   END IF;
 END */;;
 DELIMITER ;
@@ -179,8 +178,7 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `updatemodes` BEFORE UPDATE ON `target` FOR EACH ROW BEGIN
-  SET @triggertime = CONCAT(FROM_UNIXTIME(NEW.utcupdate/1000),".",CAST(MOD(NEW.utcupdate,1000) AS CHAR));
-  UPDATE modestable SET utcupdate=@triggertime WHERE acid=NEW.acid;
+  UPDATE modestable SET utcupdate=NEW.utcupdate WHERE acid=NEW.acid;
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -204,7 +202,7 @@ CREATE TABLE `targetecho` (
   `latitude` double NOT NULL COMMENT 'latitude in degrees',
   `longitude` double NOT NULL COMMENT 'longitude in degrees',
   `altitude` int DEFAULT NULL COMMENT 'Reported Altitude in Feet',
-  `verticalTrend` int DEFAULT NULL COMMENT 'Calculated Vertical Trend -1 = down, 0 = level, 1 = up',
+  `verticalTrend` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Calculated Vertical Trend -1 = down, 0 = level, 1 = up',
   `onground` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`record_num`),
   KEY `FK_targetecho_acid` (`acid`),
@@ -224,8 +222,8 @@ CREATE TABLE `targethistory` (
   `flight_id` bigint unsigned NOT NULL DEFAULT '0',
   `radar_id` int unsigned NOT NULL DEFAULT '0',
   `acid` char(6) NOT NULL,
-  `utcdetect` varchar(45) NOT NULL,
-  `utcfadeout` varchar(45) NOT NULL,
+  `utcdetect` bigint NOT NULL COMMENT 'UTC Time detected',
+  `utcfadeout` bigint NOT NULL COMMENT 'UTC Fadeout Time',
   `altitude` int DEFAULT NULL,
   `groundSpeed` double DEFAULT NULL,
   `groundTrack` double DEFAULT NULL,
@@ -235,7 +233,7 @@ CREATE TABLE `targethistory` (
   `latitude` double DEFAULT NULL,
   `longitude` double DEFAULT NULL,
   `verticalRate` int DEFAULT NULL,
-  `verticalTrend` int DEFAULT NULL COMMENT 'Calculated Vertical Trend -1 = down, 0 = level, 1 = up',
+  `verticalTrend` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Calculated Vertical Trend -1 = down, 0 = level, 1 = up',
   `squawk` int unsigned DEFAULT NULL,
   `alert` tinyint(1) NOT NULL DEFAULT '0',
   `emergency` tinyint(1) NOT NULL DEFAULT '0',

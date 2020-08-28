@@ -82,7 +82,7 @@ public final class GUI extends JFrame {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("ADSBMySQL 1.90");
+        setTitle("ADSBMySQL 1.91");
         setBounds(new java.awt.Rectangle(300, 300, 0, 0));
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {

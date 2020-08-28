@@ -75,7 +75,6 @@ public final class MetarUpdater {
 
         @Override
         public void run() {
-            Timestamp sqlTime = new Timestamp(0);
             double altimeter = 0.0;
             int tc, tf = 0, dpc, dpf = 0;
             int tval, rh = 0;
@@ -83,11 +82,10 @@ public final class MetarUpdater {
             String inputLine;
             String queryString;
             String utcObserve, temp, dptemp;
-            String timeStamp;
+            long time;
 
             try {
-                sqlTime.setTime(zulu.getUTCTime());
-                timeStamp = sqlTime.toString();
+                time = zulu.getUTCTime();
 
                 for (int j = 0; j < metarLongName.length; j++) {
                     nws = new URL(metarLongName[j]);
@@ -272,9 +270,9 @@ public final class MetarUpdater {
                     queryString = String.format("INSERT INTO metar ("
                             + "airport,utcupdate,utcObserve,temp,dewpoint,humidity,"
                             + "altimeter,pressureAlt,windDirection,windSpeed,windGust)"
-                            + " VALUES ('%s','%s','%s',%d,%d,%d,%.2f,%d,%03d,%d,%d)",
+                            + " VALUES ('%s',%d,'%s',%d,%d,%d,%.2f,%d,%03d,%d,%d)",
                             metarStations[j],
-                            timeStamp,
+                            time,
                             utcObserve,
                             tf,
                             dpf,
