@@ -66,6 +66,7 @@ public final class SocketParse extends Thread {
     private long velocityCount;
     private long altitudeCount;
     private long squawkCount;
+    private long airairCount;
     //
     private long callsignMetric;
     private long surfaceMetric;
@@ -73,7 +74,8 @@ public final class SocketParse extends Thread {
     private long velocityMetric;
     private long altitudeMetric;
     private long squawkMetric;
-
+    private long airairMetric;
+    
     /*
      * Class constructor
      */
@@ -139,7 +141,8 @@ public final class SocketParse extends Thread {
                 = airborneCount
                 = velocityCount
                 = altitudeCount
-                = squawkCount = 0L;
+                = squawkCount
+                = airairCount = 0L;
     }
 
     public void resetMetricCount() {
@@ -148,7 +151,8 @@ public final class SocketParse extends Thread {
                 = airborneMetric
                 = velocityMetric
                 = altitudeMetric
-                = squawkMetric = 0L;
+                = squawkMetric
+                = airairMetric = 0L;
     }
 
     public long getCallsignCount() {
@@ -175,6 +179,10 @@ public final class SocketParse extends Thread {
         return squawkCount;
     }
 
+    public long getAirAirCount() {
+        return airairCount;
+    }
+    
     public long getCallsignMetric() {
         return callsignMetric;
     }
@@ -197,6 +205,10 @@ public final class SocketParse extends Thread {
 
     public long getSquawkMetric() {
         return squawkMetric;
+    }
+
+    public long getAirAirMetric() {
+        return airairMetric;
     }
 
     public long getTrackMetric() {
@@ -675,8 +687,8 @@ public final class SocketParse extends Thread {
                                 id.setSquawk(squawk);
                                 break;
                             case 7:
-                                altitudeCount++;
-                                altitudeMetric++;
+                                airairCount++;
+                                airairMetric++;
 
                                 temp = token[ALTITUDE].trim();
 

@@ -8,7 +8,7 @@ import java.util.Locale;
  * This software listens for ADS-B/Mode-S data from a Basestation compatible
  * TCP socket port, and puts the data into MySQL database tables.
  *
- * @version 1.91
+ * @version 1.92
  */
 public final class Main {
 

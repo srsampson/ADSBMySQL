@@ -79,6 +79,7 @@ CREATE TABLE `metrics` (
   `velocityCount` bigint unsigned NOT NULL,
   `altitudeCount` bigint unsigned NOT NULL,
   `squawkCount` bigint unsigned NOT NULL,
+  `airairCount` bigint unsigned NOT NULL,
   `trackCount` bigint unsigned NOT NULL,
   `radar_id` int unsigned NOT NULL,
   PRIMARY KEY (`seq_num`)

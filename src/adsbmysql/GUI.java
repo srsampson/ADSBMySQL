@@ -44,6 +44,7 @@ public final class GUI extends JFrame {
         type4Count.setText(String.valueOf(process.getVelocityCount()));
         type5Count.setText(String.valueOf(process.getAltitudeCount()));
         type6Count.setText(String.valueOf(process.getSquawkCount()));
+        type7Count.setText(String.valueOf(process.getAirAirCount()));
         //
         trackCounter.setText(String.valueOf(process.getTrackMetric()));
     }
@@ -64,14 +65,6 @@ public final class GUI extends JFrame {
         jPanel3 = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
         clearCounterButton = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
-        type1Count = new javax.swing.JLabel();
-        type2Count = new javax.swing.JLabel();
-        type3Count = new javax.swing.JLabel();
-        type4Count = new javax.swing.JLabel();
-        type5Count = new javax.swing.JLabel();
-        type6Count = new javax.swing.JLabel();
-        trackCounter = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         callsign = new javax.swing.JLabel();
         surface = new javax.swing.JLabel();
@@ -79,10 +72,19 @@ public final class GUI extends JFrame {
         velocity = new javax.swing.JLabel();
         altitude = new javax.swing.JLabel();
         squawk = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
+        airtoair = new javax.swing.JLabel();
+        tracks = new javax.swing.JLabel();
+        type1Count = new javax.swing.JLabel();
+        type2Count = new javax.swing.JLabel();
+        type3Count = new javax.swing.JLabel();
+        type4Count = new javax.swing.JLabel();
+        type5Count = new javax.swing.JLabel();
+        type6Count = new javax.swing.JLabel();
+        type7Count = new javax.swing.JLabel();
+        trackCounter = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("ADSBMySQL 1.91");
+        setTitle("ADSBMySQL 1.92");
         setBounds(new java.awt.Rectangle(300, 300, 0, 0));
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -109,10 +111,10 @@ public final class GUI extends JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
+                .addComponent(jLabel13)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(clearCounterButton)
-                .addGap(28, 28, 28))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -123,6 +125,73 @@ public final class GUI extends JFrame {
                     .addComponent(clearCounterButton))
                 .addGap(29, 29, 29))
         );
+
+        callsign.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        callsign.setText("Callsign");
+
+        surface.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        surface.setText("Surface");
+
+        airborne.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        airborne.setText("Airborne");
+
+        velocity.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        velocity.setText("Velocity");
+
+        altitude.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        altitude.setText("Altitude");
+
+        squawk.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        squawk.setText("Squawk");
+
+        airtoair.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        airtoair.setText("Air to Air");
+
+        tracks.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        tracks.setText("Tracks");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(callsign)
+                    .addComponent(surface)
+                    .addComponent(airborne)
+                    .addComponent(velocity)
+                    .addComponent(altitude)
+                    .addComponent(squawk)
+                    .addComponent(airtoair)
+                    .addComponent(tracks)))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(callsign)
+                .addGap(18, 18, 18)
+                .addComponent(surface)
+                .addGap(18, 18, 18)
+                .addComponent(airborne)
+                .addGap(18, 18, 18)
+                .addComponent(velocity)
+                .addGap(18, 18, 18)
+                .addComponent(altitude)
+                .addGap(18, 18, 18)
+                .addComponent(squawk)
+                .addGap(18, 18, 18)
+                .addComponent(airtoair)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(tracks))
+        );
+
+        surface.getAccessibleContext().setAccessibleParent(jPanel1);
+        airborne.getAccessibleContext().setAccessibleParent(jPanel1);
+        velocity.getAccessibleContext().setAccessibleParent(jPanel1);
+        altitude.getAccessibleContext().setAccessibleParent(jPanel1);
+        squawk.getAccessibleContext().setAccessibleParent(jPanel1);
 
         type1Count.setBackground(new java.awt.Color(255, 255, 255));
         type1Count.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
@@ -160,110 +229,17 @@ public final class GUI extends JFrame {
         type6Count.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
         type6Count.setOpaque(true);
 
+        type7Count.setBackground(new java.awt.Color(255, 255, 255));
+        type7Count.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        type7Count.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        type7Count.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        type7Count.setOpaque(true);
+
         trackCounter.setBackground(new java.awt.Color(255, 255, 255));
         trackCounter.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         trackCounter.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         trackCounter.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
         trackCounter.setOpaque(true);
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(type1Count, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(type2Count, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(type3Count, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(type4Count, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(type5Count, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(type6Count, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(trackCounter, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(type1Count, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(type2Count, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(type3Count, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(type4Count, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(type5Count, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(type6Count, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(trackCounter, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        callsign.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        callsign.setText("Callsign");
-
-        surface.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        surface.setText("Surface");
-
-        airborne.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        airborne.setText("Airborne");
-
-        velocity.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        velocity.setText("Velocity");
-
-        altitude.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        altitude.setText("Altitude");
-
-        squawk.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        squawk.setText("Squawk");
-
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel1.setText("Tracks");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(callsign)
-                    .addComponent(surface)
-                    .addComponent(airborne)
-                    .addComponent(velocity)
-                    .addComponent(altitude)
-                    .addComponent(squawk))
-                .addContainerGap(27, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(callsign)
-                .addGap(18, 18, 18)
-                .addComponent(surface)
-                .addGap(18, 18, 18)
-                .addComponent(airborne)
-                .addGap(18, 18, 18)
-                .addComponent(velocity)
-                .addGap(18, 18, 18)
-                .addComponent(altitude)
-                .addGap(18, 18, 18)
-                .addComponent(squawk)
-                .addGap(25, 25, 25)
-                .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        surface.getAccessibleContext().setAccessibleParent(jPanel1);
-        airborne.getAccessibleContext().setAccessibleParent(jPanel1);
-        velocity.getAccessibleContext().setAccessibleParent(jPanel1);
-        altitude.getAccessibleContext().setAccessibleParent(jPanel1);
-        squawk.getAccessibleContext().setAccessibleParent(jPanel1);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -272,72 +248,98 @@ public final class GUI extends JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(10, 10, 10)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                        .addGap(39, 39, 39)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(type7Count, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(trackCounter, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(type6Count, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(type5Count, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(type4Count, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(type3Count, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(type2Count, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(type1Count, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(44, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap(13, Short.MAX_VALUE)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                        .addGap(0, 15, Short.MAX_VALUE)
+                        .addComponent(type1Count, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(type2Count, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(type3Count, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(type4Count, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(type5Count, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(type6Count, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(type7Count, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(33, 33, 33)
+                        .addComponent(trackCounter, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jPanel3.getAccessibleContext().setAccessibleParent(jPanel4);
-        jPanel2.getAccessibleContext().setAccessibleParent(jPanel4);
         jPanel1.getAccessibleContext().setAccessibleParent(jPanel4);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void clearCounterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearCounterButtonActionPerformed
-        process.resetCount();
-        updateCountersDisplay();
-    }//GEN-LAST:event_clearCounterButtonActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         process.close();
         db.close();
         System.runFinalization();
     }//GEN-LAST:event_formWindowClosing
+
+    private void clearCounterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearCounterButtonActionPerformed
+        process.resetCount();
+        updateCountersDisplay();
+    }//GEN-LAST:event_clearCounterButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel airborne;
+    private javax.swing.JLabel airtoair;
     private javax.swing.JLabel altitude;
     private javax.swing.JLabel callsign;
     private javax.swing.JButton clearCounterButton;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JLabel squawk;
     private javax.swing.JLabel surface;
     private javax.swing.JLabel trackCounter;
+    private javax.swing.JLabel tracks;
     private javax.swing.JLabel type1Count;
     private javax.swing.JLabel type2Count;
     private javax.swing.JLabel type3Count;
     private javax.swing.JLabel type4Count;
     private javax.swing.JLabel type5Count;
     private javax.swing.JLabel type6Count;
+    private javax.swing.JLabel type7Count;
     private javax.swing.JLabel velocity;
     // End of variables declaration//GEN-END:variables
 }

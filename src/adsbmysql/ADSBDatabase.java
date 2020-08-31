@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -486,10 +485,12 @@ public final class ADSBDatabase extends Thread {
             update = String.format("INSERT INTO metrics SET utcupdate=%d,"
                     + "callsignCount=%d,surfaceCount=%d,"
                     + "airborneCount=%d,velocityCount=%d,"
-                    + "altitudeCount=%d,squawkCount=%d,trackCount=%d,radar_id=%d",
-                    time, con.getCallsignMetric(), con.getSurfaceMetric(), con.getAirborneMetric(),
-                    con.getVelocityMetric(), con.getAltitudeMetric(), con.getSquawkMetric(),
-                    con.getTrackMetric(), radarid);
+                    + "altitudeCount=%d,squawkCount=%d,"
+                    + "airairCount=%d,trackCount=%d,radar_id=%d",
+                    time, con.getCallsignMetric(), con.getSurfaceMetric(),
+                    con.getAirborneMetric(), con.getVelocityMetric(),
+                    con.getAltitudeMetric(), con.getSquawkMetric(),
+                    con.getAirAirMetric(),con.getTrackMetric(), radarid);
 
             con.resetMetricCount();
 
