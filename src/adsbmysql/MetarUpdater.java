@@ -35,7 +35,6 @@ public final class MetarUpdater {
     private final TimerTask task1;
     //
     private URL nws;
-    private final ZuluMillis zulu;
     private BufferedReader in;
     private Statement query;
     private final Connection con;
@@ -43,8 +42,7 @@ public final class MetarUpdater {
     private final String[] metarLongName;
     private final String[] metarStations;
 
-    public MetarUpdater(Config c, ADSBDatabase d, ZuluMillis z) {
-        zulu = z;
+    public MetarUpdater(Config c, ADSBDatabase d) {
         con = d.getDBConnection();
         homeAlt = c.getHomeAlt();
         metarStations = c.getMetarNames();
@@ -85,7 +83,7 @@ public final class MetarUpdater {
             long time;
 
             try {
-                time = zulu.getUTCTime();
+                time = System.currentTimeMillis();
 
                 for (int j = 0; j < metarLongName.length; j++) {
                     nws = new URL(metarLongName[j]);

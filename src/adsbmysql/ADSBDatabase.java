@@ -28,15 +28,12 @@ public final class ADSBDatabase extends Thread {
     private int radarid;
     private long radarscan;
     //
-    private ZuluMillis zulu;
     private Timer timer;
     private TimerTask task;
 
-    public ADSBDatabase(Config cf, SocketParse k, ZuluMillis z) {
+    public ADSBDatabase(Config cf, SocketParse k) {
         this.con = k;
-        this.zulu = new ZuluMillis();
         this.config = cf;
-        this.zulu = z;
         this.radarid = cf.getRadarID();
         this.radarscan = (long) cf.getRadarScanTime() * 1000L;
         this.acid = "";
@@ -447,7 +444,7 @@ public final class ADSBDatabase extends Thread {
         public void run() {
             String update;
 
-            time = zulu.getUTCTime();
+            time = System.currentTimeMillis();
             timeout = time - (min * 60L * 1000L);    // timeout in milliseconds
 
             /*

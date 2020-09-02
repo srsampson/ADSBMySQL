@@ -39,7 +39,6 @@ public final class SocketParse extends Thread {
     private static final long RATE1 = 30L * 1000L;              // 30 seconds
     private static final long RATE2 = 5L * 1000L;               // 5 seconds
     //
-    private final ZuluMillis zulu;
     private Socket connection;
     private BufferedReader line;
     //
@@ -79,9 +78,8 @@ public final class SocketParse extends Thread {
     /*
      * Class constructor
      */
-    public SocketParse(Config c, ZuluMillis z) {
+    public SocketParse(Config c) {
         this.config = c;
-        this.zulu = z;
 
         trackReports = new ConcurrentHashMap<>();
         reg = new NConverter();
@@ -226,7 +224,7 @@ public final class SocketParse extends Thread {
 
         @Override
         public void run() {
-            long currentTime = zulu.getUTCTime();
+            long currentTime = System.currentTimeMillis();
             long delta;
 
             for (Track id : getTrackTable()) {
@@ -252,7 +250,7 @@ public final class SocketParse extends Thread {
 
         @Override
         public void run() {
-            currentTime = zulu.getUTCTime();
+            currentTime = System.currentTimeMillis();
             delta = 0L;
             String acid;
 
@@ -382,7 +380,7 @@ public final class SocketParse extends Thread {
             try {
                 while (line.ready()) {
                     data = line.readLine();
-                    currentTime = zulu.getUTCTime();
+                    currentTime = System.currentTimeMillis();
 
                     if (data.startsWith("MSG")) {
                         token = data.split(",", -2);   // Tokenize the data input line

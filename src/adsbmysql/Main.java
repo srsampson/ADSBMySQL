@@ -15,11 +15,8 @@ public final class Main {
     private static GUI gui;
     private static String config = "adsbmysql.conf";
     private static Config c;
-    private static ZuluMillis zulu;
 
     public static void main(String[] args) {
-        zulu = new ZuluMillis();
-
         /*
          * The user may have a commandline option as to which config file to use
          */
@@ -46,8 +43,8 @@ public final class Main {
         /*
          * Start the program
          */
-        SocketParse con = new SocketParse(c, zulu);
-        ADSBDatabase db = new ADSBDatabase(c, con, zulu);
+        SocketParse con = new SocketParse(c);
+        ADSBDatabase db = new ADSBDatabase(c, con);
 
         System.out.println("Program started");
 
@@ -63,7 +60,7 @@ public final class Main {
             gui.setVisible(true);
         }
 
-        MetarUpdater mu = new MetarUpdater(c, db, zulu);
+        MetarUpdater mu = new MetarUpdater(c, db);
         mu.start();
 
         Shutdown sh = new Shutdown(con, db, mu);
