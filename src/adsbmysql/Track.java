@@ -223,33 +223,31 @@ public final class Track {
      * @param val an integer Representing the track climb or descent rate
      */
     public void setVerticalRate(int val) {
-        if (this.verticalRate != val) {
-            this.verticalRate = val;
-            this.updated = true;
-            
-            int vt = 0;
+        this.verticalRate = val;
+        this.updated = true;
 
-            if (val > 192) {
-                trend[trend_el] = 1;
-            } else if (val < -192) {
-                trend[trend_el] = -1;
-            } else {
-                trend[trend_el] = 0;
-            }
+        int vt = 0;
 
-            trend_el = (trend_el + 1) % 10;
+        if (val > 192) {
+            trend[trend_el] = 1;
+        } else if (val < -192) {
+            trend[trend_el] = -1;
+        } else {
+            trend[trend_el] = 0;
+        }
 
-            for (int i = 0; i < 10; i++) {
-                vt += trend[i];
-            }
+        trend_el = (trend_el + 1) % 10;
 
-            if (vt > 0) {
-                verticalTrend = 1;
-            } else if (vt < 0) {
-                verticalTrend = -1;
-            } else {
-                verticalTrend = 0;
-            }
+        for (int i = 0; i < 10; i++) {
+            vt += trend[i];
+        }
+
+        if (vt > 0) {
+            verticalTrend = 1;
+        } else if (vt < 0) {
+            verticalTrend = -1;
+        } else {
+            verticalTrend = 0;
         }
     }
 
@@ -285,7 +283,8 @@ public final class Track {
     }
 
     /**
-     * Method used to return the target computed ground track in degrees true north.
+     * Method used to return the target computed ground track in degrees true
+     * north.
      *
      * @return target ground track in degrees true north
      */
