@@ -223,9 +223,11 @@ public final class Track {
      * @param val an integer Representing the track climb or descent rate
      */
     public void setVerticalRate(int val) {
-        this.verticalRate = val;
-        this.updated = true;
-
+        if (verticalRate != val) {
+            verticalRate = val;
+            updated = true;
+        }
+        
         int vt = 0;
 
         if (val > 192) {
