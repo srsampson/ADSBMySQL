@@ -18,6 +18,6 @@ public final class Shutdown extends Thread {
         kp.close();
         db.close();
         mu.close();
-        System.runFinalization();
+//        System.runFinalization();
     }
 }

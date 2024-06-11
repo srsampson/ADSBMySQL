@@ -1,6 +1,7 @@
 package adsbmysql;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 /*
@@ -15,6 +16,7 @@ public final class Config {
     private int radarid;
     private int radarscan;
     private int databaseTargetTimeout;
+    private int databaseMetricTimeout;
     private int homeAlt;
     private String[] metarNames;
     private String socketIP;
@@ -23,7 +25,6 @@ public final class Config {
     private String databasePort;
     private String databaseLogin;
     private String databasePassword;
-    private boolean disablegui;
     //
     private Properties Props;
     private String userDir;
@@ -53,7 +54,7 @@ public final class Config {
             FileInputStream in = new FileInputStream(OSConfPath);
             Props = new Properties();
             Props.load(in);
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.out.println("ADSBMySQL::Config Fatal: Unable to read configuration file " + OSConfPath);
             System.exit(-1);
         }
@@ -104,14 +105,6 @@ public final class Config {
                 }
             }
 
-            temp = Props.getProperty("gui.disable");
-            if (temp == null) {
-                disablegui = false;
-                System.out.println("gui.disable not set, set to false");
-            } else {
-                disablegui = temp.trim().toLowerCase().equals("true");
-            }
-
             temp = Props.getProperty("socket.address");
             if (temp == null) {
                 socketIP = "127.0.0.1";
@@ -144,6 +137,18 @@ public final class Config {
                 }
             }
 
+            temp = Props.getProperty("db.metrictimeout");
+            if (temp == null) {
+                databaseMetricTimeout = 6;
+                System.out.println("db.metrictimeout not set, set to 6 minutes");
+            } else {
+                try {
+                    databaseMetricTimeout = Integer.parseInt(temp.trim());
+                } catch (NumberFormatException e) {
+                    databaseMetricTimeout = 6;
+                }
+            }
+            
             temp = Props.getProperty("db.host");
             if (temp == null) {
                 databaseHost = "127.0.0.1";
@@ -210,15 +215,6 @@ public final class Config {
     }
 
     /**
-     * Getter to return whether the GUI display is wanted
-     *
-     * @return a boolean Where true means disable the GUI display
-     */
-    public boolean getDisableGui() {
-        return this.disablegui;
-    }
-
-    /**
      * Getter to return the configuration Basestation TCP port
      *
      * @return an integer Representing the Basestation TCP port
@@ -273,11 +269,20 @@ public final class Config {
     }
 
     /**
-     * Getter to return the database timeout value
+     * Getter to return the target timeout value
      *
      * @return an int Representing the database timeout for archiving
      */
-    public int getDatabaseTimeout() {
+    public int getDatabaseTargetTimeout() {
         return databaseTargetTimeout;
+    }
+
+    /**
+     * Getter to return the metric timeout value
+     *
+     * @return an int Representing the database timeout for reset metrics
+     */
+    public int getDatabaseMetricTimeout() {
+        return databaseMetricTimeout;
     }
 }

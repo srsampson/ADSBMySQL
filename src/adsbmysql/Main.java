@@ -12,7 +12,6 @@ import java.util.Locale;
  */
 public final class Main {
 
-    private static GUI gui;
     private static String config = "adsbmysql.conf";
     private static Config c;
 
@@ -46,19 +45,9 @@ public final class Main {
         SocketParse con = new SocketParse(c);
         ADSBDatabase db = new ADSBDatabase(c, con);
 
+        db.startup();
+
         System.out.println("Program started");
-
-        /*
-         * Assume that no graphics is desired
-         */
-        gui = null;
-
-        if (c.getDisableGui() == false) {
-            // Found out the user would like graphics
-
-            gui = new GUI(db, con);
-            gui.setVisible(true);
-        }
 
         MetarUpdater mu = new MetarUpdater(c, db);
         mu.start();

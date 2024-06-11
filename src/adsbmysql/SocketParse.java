@@ -59,14 +59,6 @@ public final class SocketParse extends Thread {
     private final TimerTask task1;
     private final TimerTask task2;
     //
-    private long callsignCount;
-    private long surfaceCount;
-    private long airborneCount;
-    private long velocityCount;
-    private long altitudeCount;
-    private long squawkCount;
-    private long airairCount;
-    //
     private long callsignMetric;
     private long surfaceMetric;
     private long airborneMetric;
@@ -74,7 +66,7 @@ public final class SocketParse extends Thread {
     private long altitudeMetric;
     private long squawkMetric;
     private long airairMetric;
-    
+
     /*
      * Class constructor
      */
@@ -85,7 +77,6 @@ public final class SocketParse extends Thread {
         reg = new NConverter();
 
         openSBSSocket();
-        resetCount();
 
         socketReceive = new Thread(this);
         socketReceive.setName("SocketParse");
@@ -133,16 +124,9 @@ public final class SocketParse extends Thread {
         }
     }
 
-    public void resetCount() {
-        callsignCount
-                = surfaceCount
-                = airborneCount
-                = velocityCount
-                = altitudeCount
-                = squawkCount
-                = airairCount = 0L;
-    }
-
+    /*
+     * This is called by Database Thread 
+     */
     public void resetMetricCount() {
         callsignMetric
                 = surfaceMetric
@@ -153,34 +137,6 @@ public final class SocketParse extends Thread {
                 = airairMetric = 0L;
     }
 
-    public long getCallsignCount() {
-        return callsignCount;
-    }
-
-    public long getSurfaceCount() {
-        return surfaceCount;
-    }
-
-    public long getAirborneCount() {
-        return airborneCount;
-    }
-
-    public long getVelocityCount() {
-        return velocityCount;
-    }
-
-    public long getAltitudeCount() {
-        return altitudeCount;
-    }
-
-    public long getSquawkCount() {
-        return squawkCount;
-    }
-
-    public long getAirAirCount() {
-        return airairCount;
-    }
-    
     public long getCallsignMetric() {
         return callsignMetric;
     }
@@ -231,7 +187,7 @@ public final class SocketParse extends Thread {
                 // find the reports that haven't been updated in X minutes
                 delta = Math.abs(currentTime - id.getUpdateTime());
 
-                if (delta >= (config.getDatabaseTimeout() * 60L * 1000L)) {
+                if (delta >= (config.getDatabaseTargetTimeout() * 60L * 1000L)) {
                     removeTrackReportsVal(id.getAircraftID());
                 }
             }
@@ -417,7 +373,6 @@ public final class SocketParse extends Thread {
                                 id.setOnGround(isOnGround);
                                 break;
                             case 1:
-                                callsignCount++;
                                 callsignMetric++;
 
                                 try {
@@ -429,7 +384,6 @@ public final class SocketParse extends Thread {
                                 id.setCallsign(callsign);
                                 break;
                             case 2:
-                                surfaceCount++;
                                 surfaceMetric++;
 
                                 temp = token[ALTITUDE].trim();
@@ -488,7 +442,6 @@ public final class SocketParse extends Thread {
                                 id.setOnGround(isOnGround);
                                 break;
                             case 3:
-                                airborneCount++;
                                 airborneMetric++;
 
                                 temp = token[ALTITUDE].trim();
@@ -555,7 +508,6 @@ public final class SocketParse extends Thread {
                                 id.setAlert(alert, emergency, spi);
                                 break;
                             case 4:
-                                velocityCount++;
                                 velocityMetric++;
 
                                 temp = token[GSPEED].trim();
@@ -585,7 +537,6 @@ public final class SocketParse extends Thread {
                                 id.setVelocityData(groundTrack, groundSpeed, verticalRate);
                                 break;
                             case 5:
-                                altitudeCount++;
                                 altitudeMetric++;
 
                                 temp = token[ALTITUDE].trim();
@@ -626,7 +577,6 @@ public final class SocketParse extends Thread {
                                 id.setAltitude(altitude);
                                 break;
                             case 6:
-                                squawkCount++;
                                 squawkMetric++;
 
                                 temp = token[ALTITUDE].trim();
@@ -685,7 +635,6 @@ public final class SocketParse extends Thread {
                                 id.setSquawk(squawk);
                                 break;
                             case 7:
-                                airairCount++;
                                 airairMetric++;
 
                                 temp = token[ALTITUDE].trim();

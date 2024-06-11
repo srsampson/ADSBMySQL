@@ -26,10 +26,14 @@ public final class ADSBDatabase extends Thread {
     private Config config;
     private String acid;
     private int radarid;
+    private int metricTimeout;
     private long radarscan;
     //
-    private Timer timer;
-    private TimerTask task;
+    private Timer targetTimer;
+    private Timer metricTimer;
+    //
+    private TimerTask targetTimeoutTask;
+    private TimerTask metricTimeoutTask;
 
     public ADSBDatabase(Config cf, SocketParse k) {
         this.con = k;
@@ -39,9 +43,17 @@ public final class ADSBDatabase extends Thread {
         this.acid = "";
         EOF = false;
 
-        task = new ADSBDatabase.TimeoutThread(config.getDatabaseTimeout());
-        timer = new Timer();
+        metricTimeout = config.getDatabaseMetricTimeout();
+        metricTimeoutTask = new ADSBDatabase.MetricTimeoutThread();
 
+        targetTimeoutTask = new ADSBDatabase.TargetTimeoutThread(config.getDatabaseTargetTimeout());
+        
+        targetTimer = new Timer();
+        targetTimer.scheduleAtFixedRate(targetTimeoutTask, 0L, RATE); // Update targets every 30 seconds
+
+        metricTimer = new Timer();
+        metricTimer.scheduleAtFixedRate(metricTimeoutTask, 0L, metricTimeout); // Update metrics every 6 minutes
+        
         database = new Thread(this);
         database.setName("ADSBDatabase");
         database.setPriority(Thread.NORM_PRIORITY);
@@ -53,7 +65,7 @@ public final class ADSBDatabase extends Thread {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
             db1 = DriverManager.getConnection(config.getDatabaseURL(), config.getDatabaseLogin(), config.getDatabasePassword());
-        } catch (Exception e) {
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | SQLException e) {
             System.err.println("ADSBDatabase Fatal: Unable to open database 1 " + config.getDatabaseURL() + " " + e.getMessage());
             System.exit(-1);
         }
@@ -64,9 +76,11 @@ public final class ADSBDatabase extends Thread {
             System.err.println("ADSBDatabase Fatal: Unable to open database 2 " + config.getDatabaseURL() + " " + e3.getMessage());
             System.exit(-1);
         }
-
+    }
+    
+    public void startup() {
         database.start();
-        timer.scheduleAtFixedRate(task, 0L, RATE);
+
     }
 
     public void close() {
@@ -76,7 +90,7 @@ public final class ADSBDatabase extends Thread {
             con.close();
             db1.close();
             db2.close();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.out.println("ADSBDatabase::close Closing Bug " + e.toString());
             System.exit(-1);
         }
@@ -128,8 +142,9 @@ public final class ADSBDatabase extends Thread {
                             query.close();
                         } catch (SQLException e) {
                             try {
-                                rs.close();
-                            } catch (Exception e9) {
+                                if (rs != null)
+                                    rs.close();
+                            } catch (SQLException e9) {
                             }
                             query.close();
                             continue;   // this is not good, so end pass
@@ -332,7 +347,7 @@ public final class ADSBDatabase extends Thread {
 
                                 rs.close();
                                 query.close();
-                            } catch (Exception e) {
+                            } catch (SQLException e) {
                                 rs.close();
                                 query.close();
                                 System.out.println("ADSBDatabase::run query modestable warn: " + queryString + " " + e.getMessage());
@@ -369,7 +384,7 @@ public final class ADSBDatabase extends Thread {
 
                                 rs.close();
                                 query.close();
-                            } catch (Exception e) {
+                            } catch (SQLException e) {
                                 rs.close();
                                 query.close();
                                 System.out.println("ADSBDatabase::run query callsign warn: " + queryString + " " + e.getMessage());
@@ -405,14 +420,14 @@ public final class ADSBDatabase extends Thread {
                  */
                 try {
                     Thread.sleep(radarscan);
-                } catch (Exception f) {
+                } catch (InterruptedException f) {
                 }
             }
         } catch (NumberFormatException | SQLException e) {
             // Probably an I/O Exception
             try {
                 query.close();
-            } catch (Exception e1) {
+            } catch (SQLException e1) {
             }
             System.out.println("ADSBDatabase::run Exception in main loop: " + queryString + " " + e.getMessage());
             close();
@@ -420,12 +435,11 @@ public final class ADSBDatabase extends Thread {
     }
 
     /**
-     * TimeoutThread
+     * TargetTimeoutThread
      *
-     * A TimerTask class to move target to history after fade-out, and update
-     * metrics
+     * A TimerTask class to move target to history after fade-out,
      */
-    class TimeoutThread extends TimerTask {
+    class TargetTimeoutThread extends TimerTask {
 
         private long time;
         private long timeout;
@@ -436,7 +450,7 @@ public final class ADSBDatabase extends Thread {
          *
          * @param to an int Representing the timeout in minutes
          */
-        public TimeoutThread(int to) {
+        public TargetTimeoutThread(int to) {
             min = to;
         }
 
@@ -473,12 +487,24 @@ public final class ADSBDatabase extends Thread {
             } catch (SQLException e) {
                 System.out.println("ADSBDatabase:run delete SQL Error: " + update + " " + e.getMessage());
             }
+        }
+    }
 
-            /*
-             * These counts are not super accurate, as this thread may reset the
-             * counts to zero, while the other thread has just incremented the
-             * value.
-             */
+    /**
+     * MetricTimeoutThread
+     *
+     * A TimerTask class to reset metrics to zero,
+     */
+    class MetricTimeoutThread extends TimerTask {
+
+        private long time;
+
+        @Override
+        public void run() {
+            String update;
+
+            time = System.currentTimeMillis();
+
             update = String.format("INSERT INTO metrics SET utcupdate=%d,"
                     + "callsignCount=%d,surfaceCount=%d,"
                     + "airborneCount=%d,velocityCount=%d,"
@@ -494,7 +520,7 @@ public final class ADSBDatabase extends Thread {
             try {
                 queryt.executeUpdate(update);
                 queryt.close();
-            } catch (Exception e) {
+            } catch (SQLException e) {
                 try {
                     queryt.close();
                 } catch (SQLException e4) {
