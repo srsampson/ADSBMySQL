@@ -12,13 +12,9 @@ Basically you create a directory to put the ```ADSBMySQL.jar``` file in. Then cr
 
 Add the config file in the main directory and you are ready to go after you set up the MySQL database.
 
-If you comment out the GUI off config, a GUI will be displayed and it basically shows the data counts being received by the Basestation TCP port. Otherwise this program does nothing but work in the background storing the data.
-
-![My image](gui.png)
-
 The database is designed so that as new targets come in, their Mode-S ICAO number is added to the ```modestable``` table, and the positions saved in the ```target``` and ```targetecho``` table. Sooner or later this aircraft will land or fade-out, and the database will move it to the ```history``` table. If it pops up again, then it is issued a new flight number. The data in the ```target``` table then, is the current data. When those targets fade or land, they are deleted from this table, and moved to the ```targethistory``` table.
 
-There is also a ```metrics``` table that shows how much data has been processed every 30 seconds, and a ```metar``` table to record temperature, wind, and pressure altitude information for airports selected in the config file.
+There is also a ```metrics``` table that shows how much data has been processed every 6 minutes, and a ```metar``` table to record temperature, wind, and pressure altitude information for airports selected in the config file.
 
 Commandline: ```java -jar ADSBMySQL.jar 2>&1 >>errorlog.txt &``` on Linux and just double click the jar file on Windows.
 
