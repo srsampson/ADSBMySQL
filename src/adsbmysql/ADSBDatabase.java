@@ -11,7 +11,7 @@ import java.util.TimerTask;
 
 public final class ADSBDatabase extends Thread {
 
-    private static final long RATE = 30000L;        // 30 Seconds
+    private static final long RATE = 30000L;        // 30 Seconds in milliseconds
     //
     private SocketParse con;
     //
@@ -26,7 +26,7 @@ public final class ADSBDatabase extends Thread {
     private Config config;
     private String acid;
     private int radarid;
-    private int metricTimeout;
+    private long metricTimeout;
     private long radarscan;
     //
     private Timer targetTimer;
@@ -43,7 +43,7 @@ public final class ADSBDatabase extends Thread {
         this.acid = "";
         EOF = false;
 
-        metricTimeout = config.getDatabaseMetricTimeout();
+        metricTimeout = config.getDatabaseMetricTimeout() * 60L * 1000L; // minutes to milliseconds
         metricTimeoutTask = new ADSBDatabase.MetricTimeoutThread();
 
         targetTimeoutTask = new ADSBDatabase.TargetTimeoutThread(config.getDatabaseTargetTimeout());
