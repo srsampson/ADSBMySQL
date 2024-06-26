@@ -6,11 +6,12 @@ package adsbmysql;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -24,12 +25,12 @@ import java.util.TimerTask;
 public final class MetarUpdater {
 
     private static final long RATE1 = 15L * 60L * 1000L;    // 15 minutes
-    private static final String NOAA = "ftp://tgftp.nws.noaa.gov/data/observations/metar/decoded/";
+    private static final String NOAA = "https://tgftp.nws.noaa.gov/data/observations/metar/decoded/";
     //
-    private static final double in_per_mb = 1.0 / 33.86389;
+    //private static final double in_per_mb = 1.0 / 33.86389;
     private static final double mb_per_in = 33.86389;
     private static final double m_per_ft = 0.304800;
-    private static final double ft_per_m = 1.0 / .304800;
+    //private static final double ft_per_m = 1.0 / .304800;
     //
     private final Timer timer1;
     private final TimerTask task1;
@@ -86,7 +87,14 @@ public final class MetarUpdater {
                 time = System.currentTimeMillis();
 
                 for (int j = 0; j < metarLongName.length; j++) {
-                    nws = new URL(metarLongName[j]);
+                    try {
+                        nws = new URI(metarLongName[j]).toURL();
+                    } catch (IOException | URISyntaxException e1) {
+                        // Bad URL, stop thread
+                        System.err.println("MetarUpdater::run fatal: Metar URL error");
+                        return;
+                    }
+                    
                     in = new BufferedReader(new InputStreamReader(nws.openStream()));
 
                     do {
@@ -96,9 +104,9 @@ public final class MetarUpdater {
                             if (inputLine.startsWith("ob:")) {
                                 break;
                             }
-                        } catch (IOException e) {
+                        } catch (IOException e2) {
                             // we're screwed, stop thread
-                            System.err.println("MetarUpdater::run fatal: IO read error");
+                            System.err.println("MetarUpdater::run fatal: Metar IO read error");
                             in.close();
                             return;
                         }

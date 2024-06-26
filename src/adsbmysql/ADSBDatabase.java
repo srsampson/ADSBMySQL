@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -27,6 +28,7 @@ public final class ADSBDatabase extends Thread {
     private String acid;
     private int radarid;
     private long metricTimeout;
+    private int targetTimeout;
     private long radarscan;
     //
     private Timer targetTimer;
@@ -43,13 +45,14 @@ public final class ADSBDatabase extends Thread {
         this.acid = "";
         EOF = false;
 
-        metricTimeout = config.getDatabaseMetricTimeout() * 60L * 1000L; // minutes to milliseconds
-        metricTimeoutTask = new ADSBDatabase.MetricTimeoutThread();
-
-        targetTimeoutTask = new ADSBDatabase.TargetTimeoutThread(config.getDatabaseTargetTimeout());
+        targetTimeout = config.getDatabaseTargetTimeout();
+        targetTimeoutTask = new TargetTimeoutThread(targetTimeout);
         
         targetTimer = new Timer();
         targetTimer.scheduleAtFixedRate(targetTimeoutTask, 0L, RATE); // Update targets every 30 seconds
+
+        metricTimeout = config.getDatabaseMetricTimeout() * 60L * 1000L; // minutes to milliseconds
+        metricTimeoutTask = new MetricTimeoutThread();
 
         metricTimer = new Timer();
         metricTimer.scheduleAtFixedRate(metricTimeoutTask, 0L, metricTimeout); // Update metrics every 6 minutes
@@ -58,20 +61,26 @@ public final class ADSBDatabase extends Thread {
         database.setName("ADSBDatabase");
         database.setPriority(Thread.NORM_PRIORITY);
 
+        String connectionURL = config.getDatabaseURL();
+    
+        Properties properties = new Properties();
+        properties.setProperty("user", config.getDatabaseLogin());
+        properties.setProperty("password", config.getDatabasePassword());
+        properties.setProperty("useSSL", "false");
+    
         /*
          * You need the ODBC MySQL driver library in the same directory you have
          * the executable JAR file of this program.
          */
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-            db1 = DriverManager.getConnection(config.getDatabaseURL(), config.getDatabaseLogin(), config.getDatabasePassword());
-        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | SQLException e) {
+            db1 = DriverManager.getConnection(connectionURL, properties);
+        } catch (SQLException  e) {
             System.err.println("ADSBDatabase Fatal: Unable to open database 1 " + config.getDatabaseURL() + " " + e.getMessage());
             System.exit(-1);
         }
 
         try {
-            db2 = DriverManager.getConnection(config.getDatabaseURL(), config.getDatabaseLogin(), config.getDatabasePassword());
+            db2 = DriverManager.getConnection(connectionURL, properties);
         } catch (SQLException e3) {
             System.err.println("ADSBDatabase Fatal: Unable to open database 2 " + config.getDatabaseURL() + " " + e3.getMessage());
             System.exit(-1);
@@ -439,7 +448,7 @@ public final class ADSBDatabase extends Thread {
      *
      * A TimerTask class to move target to history after fade-out,
      */
-    class TargetTimeoutThread extends TimerTask {
+    private class TargetTimeoutThread extends TimerTask {
 
         private long time;
         private long timeout;
@@ -495,7 +504,7 @@ public final class ADSBDatabase extends Thread {
      *
      * A TimerTask class to reset metrics to zero,
      */
-    class MetricTimeoutThread extends TimerTask {
+    private class MetricTimeoutThread extends TimerTask {
 
         private long time;
 
