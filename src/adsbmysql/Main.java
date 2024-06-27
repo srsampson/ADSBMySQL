@@ -44,13 +44,12 @@ public final class Main {
          */
         SocketParse con = new SocketParse(c);
         ADSBDatabase db = new ADSBDatabase(c, con);
+        MetarUpdater mu = new MetarUpdater(c, db);
 
         db.startup();
+        mu.start();
 
         System.out.println("Program started");
-
-        MetarUpdater mu = new MetarUpdater(c, db);
-        mu.start();
 
         Shutdown sh = new Shutdown(con, db, mu);
         Runtime.getRuntime().addShutdownHook(sh);

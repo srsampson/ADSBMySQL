@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Timer;
@@ -67,7 +68,8 @@ public final class ADSBDatabase extends Thread {
         properties.setProperty("user", config.getDatabaseLogin());
         properties.setProperty("password", config.getDatabasePassword());
         properties.setProperty("useSSL", "false");
-    
+        properties.setProperty("serverTimezone", "UTC");
+
         /*
          * You need the ODBC MySQL driver library in the same directory you have
          * the executable JAR file of this program.
@@ -75,14 +77,14 @@ public final class ADSBDatabase extends Thread {
         try {
             db1 = DriverManager.getConnection(connectionURL, properties);
         } catch (SQLException  e) {
-            System.err.println("ADSBDatabase Fatal: Unable to open database 1 " + config.getDatabaseURL() + " " + e.getMessage());
+            System.err.println("ADSBDatabase Fatal: Unable to open database 1 " + connectionURL + " " + e.getMessage());
             System.exit(-1);
         }
 
         try {
             db2 = DriverManager.getConnection(connectionURL, properties);
         } catch (SQLException e3) {
-            System.err.println("ADSBDatabase Fatal: Unable to open database 2 " + config.getDatabaseURL() + " " + e3.getMessage());
+            System.err.println("ADSBDatabase Fatal: Unable to open database 2 " + connectionURL + " " + e3.getMessage());
             System.exit(-1);
         }
     }

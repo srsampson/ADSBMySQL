@@ -247,7 +247,7 @@ public final class Config {
      * @return a string Representing the database URL
      */
     public String getDatabaseURL() {
-        return "jdbc:mysql://" + databaseHost + ":" + databasePort + "/" + databaseName + "?serverTimezone=UTC";
+        return "jdbc:mysql://" + databaseHost + ":" + databasePort + "/" + databaseName;
     }
 
     /**
