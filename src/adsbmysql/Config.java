@@ -54,7 +54,7 @@ public final class Config {
             FileInputStream in = new FileInputStream(OSConfPath);
             Props = new Properties();
             Props.load(in);
-        } catch (IOException e) {
+        } catch (IOException e1) {
             System.out.println("ADSBMySQL::Config Fatal: Unable to read configuration file " + OSConfPath);
             System.exit(-1);
         }
@@ -68,7 +68,7 @@ public final class Config {
             Props.setProperty(STATION_ALT, temp);
             try {
                 homeAlt = Integer.parseInt(temp);
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException e2) {
                 homeAlt = 0;
             }
 
@@ -82,7 +82,7 @@ public final class Config {
             } else {
                 try {
                     radarid = Integer.parseInt(temp.trim());
-                } catch (NumberFormatException e) {
+                } catch (NumberFormatException e3) {
                     radarid = 0;
                 }
             }
@@ -100,7 +100,7 @@ public final class Config {
                     } else if (radarscan > 13) {
                         radarscan = 13;
                     }
-                } catch (NumberFormatException e) {
+                } catch (NumberFormatException e4) {
                     radarscan = 3;
                 }
             }
@@ -120,7 +120,7 @@ public final class Config {
             } else {
                 try {
                     socketPort = Integer.parseInt(temp.trim());
-                } catch (NumberFormatException e) {
+                } catch (NumberFormatException e5) {
                     socketPort = 30003;
                 }
             }
@@ -132,7 +132,7 @@ public final class Config {
             } else {
                 try {
                     databaseTargetTimeout = Integer.parseInt(temp.trim());
-                } catch (NumberFormatException e) {
+                } catch (NumberFormatException e6) {
                     databaseTargetTimeout = 3;
                 }
             }
@@ -144,7 +144,7 @@ public final class Config {
             } else {
                 try {
                     databaseMetricTimeout = Integer.parseInt(temp.trim());
-                } catch (NumberFormatException e) {
+                } catch (NumberFormatException e7) {
                     databaseMetricTimeout = 6;
                 }
             }

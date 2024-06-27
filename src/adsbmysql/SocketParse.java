@@ -321,6 +321,8 @@ public final class SocketParse extends Thread {
         int altitude;
         int verticalRate;
         int squawk;
+        int type;
+        int gnd;
         float groundSpeed;
         float groundTrack;
         float latitude;
@@ -330,15 +332,14 @@ public final class SocketParse extends Thread {
         boolean emergency;
         boolean spi;
         String[] token;
-        int type, gnd;
 
         while (EOF == false) {
             try {
-                while (line.ready()) {
+                while (line.ready() == true) {
                     data = line.readLine();
                     currentTime = System.currentTimeMillis();
 
-                    if (data.startsWith("MSG")) {
+                    if (data.startsWith("MSG") == true) {
                         token = data.split(",", -2);   // Tokenize the data input line
                         type = Integer.parseInt(token[1].trim());
                         acid = token[HEXIDENT].trim();
@@ -359,10 +360,10 @@ public final class SocketParse extends Thread {
                         id.setRegistration(reg.icao_to_n(acid));
 
                         switch (type) {
-                            case 8:
+                            case 8 -> {
                                 temp = token[GROUND].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     gnd = Integer.parseInt(temp);
 
                                     isOnGround = (gnd == -1);
@@ -371,8 +372,8 @@ public final class SocketParse extends Thread {
                                 }
 
                                 id.setOnGround(isOnGround);
-                                break;
-                            case 1:
+                            }
+                            case 1 -> {
                                 callsignMetric++;
 
                                 try {
@@ -382,13 +383,13 @@ public final class SocketParse extends Thread {
                                 }
 
                                 id.setCallsign(callsign);
-                                break;
-                            case 2:
+                            }
+                            case 2 -> {
                                 surfaceMetric++;
 
                                 temp = token[ALTITUDE].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     altitude = Integer.parseInt(temp);
                                 } else {
                                     altitude = -9999;
@@ -396,7 +397,7 @@ public final class SocketParse extends Thread {
 
                                 temp = token[GSPEED].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     groundSpeed = Float.parseFloat(temp);
                                 } else {
                                     groundSpeed = -999.0F;
@@ -404,7 +405,7 @@ public final class SocketParse extends Thread {
 
                                 temp = token[GTRACK].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     groundTrack = Float.parseFloat(temp);
                                 } else {
                                     groundTrack = -999.0F;
@@ -412,7 +413,7 @@ public final class SocketParse extends Thread {
 
                                 temp = token[LATITUDE].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     latitude = Float.parseFloat(temp);
                                 } else {
                                     latitude = -999.0F;
@@ -420,7 +421,7 @@ public final class SocketParse extends Thread {
 
                                 temp = token[LONGITUDE].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     longitude = Float.parseFloat(temp);
                                 } else {
                                     longitude = -999.0F;
@@ -428,7 +429,7 @@ public final class SocketParse extends Thread {
 
                                 temp = token[GROUND].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     gnd = Integer.parseInt(temp);
 
                                     isOnGround = (gnd == -1);
@@ -440,13 +441,13 @@ public final class SocketParse extends Thread {
                                 id.setVelocityData(groundTrack, groundSpeed, 0);
                                 id.setPosition(latitude, longitude);
                                 id.setOnGround(isOnGround);
-                                break;
-                            case 3:
+                            }
+                            case 3 -> {
                                 airborneMetric++;
 
                                 temp = token[ALTITUDE].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     altitude = Integer.parseInt(temp);
                                 } else {
                                     altitude = -9999;
@@ -454,7 +455,7 @@ public final class SocketParse extends Thread {
 
                                 temp = token[LATITUDE].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     latitude = Float.parseFloat(temp);
                                 } else {
                                     latitude = -999.0F;
@@ -462,7 +463,7 @@ public final class SocketParse extends Thread {
 
                                 temp = token[LONGITUDE].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     longitude = Float.parseFloat(temp);
                                 } else {
                                     longitude = -999.0F;
@@ -470,7 +471,7 @@ public final class SocketParse extends Thread {
 
                                 temp = token[ALERT].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     alert = Integer.parseInt(temp) != 0;
                                 } else {
                                     alert = false;
@@ -478,7 +479,7 @@ public final class SocketParse extends Thread {
 
                                 temp = token[EMERG].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     emergency = Integer.parseInt(temp) != 0;
                                 } else {
                                     emergency = false;
@@ -486,7 +487,7 @@ public final class SocketParse extends Thread {
 
                                 temp = token[SPI].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     spi = Integer.parseInt(temp) != 0;
                                 } else {
                                     spi = false;
@@ -494,7 +495,7 @@ public final class SocketParse extends Thread {
 
                                 temp = token[GROUND].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     gnd = Integer.parseInt(temp);
 
                                     isOnGround = (gnd == -1);
@@ -506,13 +507,13 @@ public final class SocketParse extends Thread {
                                 id.setPosition(latitude, longitude);
                                 id.setOnGround(isOnGround);
                                 id.setAlert(alert, emergency, spi);
-                                break;
-                            case 4:
+                            }
+                            case 4 -> {
                                 velocityMetric++;
 
                                 temp = token[GSPEED].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     groundSpeed = Float.parseFloat(temp);
                                 } else {
                                     groundSpeed = -999.0F;
@@ -520,7 +521,7 @@ public final class SocketParse extends Thread {
 
                                 temp = token[GTRACK].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     groundTrack = Float.parseFloat(temp);
                                 } else {
                                     groundTrack = -999.0F;
@@ -528,20 +529,20 @@ public final class SocketParse extends Thread {
 
                                 temp = token[VRATE].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     verticalRate = Integer.parseInt(temp);
                                 } else {
                                     verticalRate = -9999;
                                 }
 
                                 id.setVelocityData(groundTrack, groundSpeed, verticalRate);
-                                break;
-                            case 5:
+                            }
+                            case 5 -> {
                                 altitudeMetric++;
 
                                 temp = token[ALTITUDE].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     altitude = Integer.parseInt(temp);
                                 } else {
                                     altitude = -9999;
@@ -549,7 +550,7 @@ public final class SocketParse extends Thread {
 
                                 temp = token[ALERT].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     alert = Integer.parseInt(temp) != 0;
                                 } else {
                                     alert = false;
@@ -557,7 +558,7 @@ public final class SocketParse extends Thread {
 
                                 temp = token[SPI].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     spi = Integer.parseInt(temp) != 0;
                                 } else {
                                     spi = false;
@@ -565,7 +566,7 @@ public final class SocketParse extends Thread {
 
                                 temp = token[GROUND].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     gnd = Integer.parseInt(temp);
                                     isOnGround = (gnd == -1);
                                 } else {
@@ -575,13 +576,13 @@ public final class SocketParse extends Thread {
                                 id.setAlert(alert, false, spi);
                                 id.setOnGround(isOnGround);
                                 id.setAltitude(altitude);
-                                break;
-                            case 6:
+                            }
+                            case 6 -> {
                                 squawkMetric++;
 
                                 temp = token[ALTITUDE].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     altitude = Integer.parseInt(temp);
                                 } else {
                                     altitude = -9999;
@@ -589,7 +590,7 @@ public final class SocketParse extends Thread {
 
                                 temp = token[SQUAWK].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     squawk = Integer.parseInt(temp);
                                 } else {
                                     squawk = -9999;
@@ -597,7 +598,7 @@ public final class SocketParse extends Thread {
 
                                 temp = token[ALERT].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     alert = Integer.parseInt(temp) != 0;
                                 } else {
                                     alert = false;
@@ -605,7 +606,7 @@ public final class SocketParse extends Thread {
 
                                 temp = token[EMERG].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     emergency = Integer.parseInt(temp) != 0;
                                 } else {
                                     emergency = false;
@@ -613,7 +614,7 @@ public final class SocketParse extends Thread {
 
                                 temp = token[SPI].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     spi = Integer.parseInt(temp) != 0;
                                 } else {
                                     spi = false;
@@ -621,7 +622,7 @@ public final class SocketParse extends Thread {
 
                                 temp = token[GROUND].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     gnd = Integer.parseInt(temp);
 
                                     isOnGround = (gnd == -1);
@@ -633,13 +634,13 @@ public final class SocketParse extends Thread {
                                 id.setOnGround(isOnGround);
                                 id.setAltitude(altitude);
                                 id.setSquawk(squawk);
-                                break;
-                            case 7:
+                            }
+                            case 7 -> {
                                 airairMetric++;
 
                                 temp = token[ALTITUDE].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     altitude = Integer.parseInt(temp);
                                 } else {
                                     altitude = -9999;
@@ -647,7 +648,7 @@ public final class SocketParse extends Thread {
 
                                 temp = token[GROUND].trim();
 
-                                if (!temp.equals("")) {
+                                if (temp.equals("") == false) {
                                     gnd = Integer.parseInt(temp);
 
                                     isOnGround = (gnd == -1);
@@ -657,6 +658,7 @@ public final class SocketParse extends Thread {
 
                                 id.setOnGround(isOnGround);
                                 id.setAltitude(altitude);
+                            }
                         }
 
                         id.setUpdateTime(currentTime);

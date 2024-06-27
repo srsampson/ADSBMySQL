@@ -332,7 +332,7 @@ public final class Track {
             changed = true;
         }
 
-        if (changed) {
+        if (changed == true) {
             this.updated = true;
         }
     }
@@ -405,7 +405,7 @@ public final class Track {
             changed = true;
         }
 
-        if (changed) {
+        if (changed == true) {
             incrementTrackQuality();
             this.updated = this.updatePosition = true;
             this.updatePositionTime = currentTime;
@@ -427,7 +427,7 @@ public final class Track {
      * @param val a string Representing the target callsign
      */
     public synchronized void setCallsign(String val) {
-        if (!val.equals(this.callsign)) {
+        if (val.equals(this.callsign) == false) {
             this.callsign = val;
             this.updated = true;
         }
@@ -567,7 +567,7 @@ public final class Track {
             changed = true;
         }
 
-        if (changed) {
+        if (changed == true) {
             this.updated = true;
         }
     }

@@ -101,10 +101,10 @@ public final class MetarUpdater {
                         try {
                             inputLine = in.readLine();
 
-                            if (inputLine.startsWith("ob:")) {
+                            if (inputLine.startsWith("ob:") == true) {
                                 break;
                             }
-                        } catch (IOException e2) {
+                        } catch (IOException e1) {
                             // we're screwed, stop thread
                             System.err.println("MetarUpdater::run fatal: Metar IO read error");
                             in.close();
@@ -122,8 +122,8 @@ public final class MetarUpdater {
                     boolean bettertemp = false;
 
                     for (int i = 3; i < token.length; i++) {
-                        if (token[i].endsWith("KT")) {
-                            if (token[i].startsWith("VRB")) {
+                        if (token[i].endsWith("KT") == true) {
+                            if (token[i].startsWith("VRB") == true) {
                                 windSpeed = Integer.parseInt(token[i].substring(3, 5));
                                 windDirection = 360;
                             } else {
@@ -131,9 +131,9 @@ public final class MetarUpdater {
                                 windSpeed = Integer.parseInt(token[i].substring(3, 5));
                                 String gval = token[i].substring(5, 6);
 
-                                if (gval.equals("G")) {         // Looks like it has a Gust reading
+                                if (gval.equals("G") == true) {         // Looks like it has a Gust reading
                                     windGust = Integer.parseInt(token[i].substring(6, 8));
-                                } else if (gval.equals("K")) {  // No Gust reading, went straight to knots
+                                } else if (gval.equals("K") == true) {  // No Gust reading, went straight to knots
                                     windGust = 0;
                                 } else {
                                     // Beats me
@@ -143,10 +143,10 @@ public final class MetarUpdater {
                             continue;
                         }
 
-                        if (token[i].startsWith("A")) {
-                            if (token[i].equals("AUTO")
-                                    || token[i].equals("AO2")
-                                    || token[i].equals("AO2A")) {// might be AUTO or AO2
+                        if (token[i].startsWith("A") == true) {
+                            if (token[i].equals("AUTO") == true
+                                    || token[i].equals("AO2") == true
+                                    || token[i].equals("AO2A") == true) {// might be AUTO or AO2
                                 continue;
                             }
 
@@ -157,7 +157,7 @@ public final class MetarUpdater {
                             continue;
                         }
 
-                        if (token[i].startsWith("Q") && token[i].length() > 3) {
+                        if (token[i].startsWith("Q") == true && token[i].length() > 3) {
                             double aval = (double) Integer.parseInt(token[i].substring(1));
                             aval *= 0.0295301; // convert to inches
                             altimeter = aval;
@@ -165,19 +165,19 @@ public final class MetarUpdater {
                             continue;
                         }
 
-                        if (token[i].length() > 3 && token[i].substring(2, 3).equals("/")) {
-                            if (bettertemp) {
+                        if (token[i].length() > 3 && token[i].substring(2, 3).equals("/") == true) {
+                            if (bettertemp == true) {
                                 continue;
                             }
 
-                            if (token[i].substring(2, 5).equals("///")) {
+                            if (token[i].substring(2, 5).equals("///") == true) {
                                 continue;
                             }
 
                             temp = token[i].substring(0, 2);
                             dptemp = token[i].substring(3);
 
-                            if (dptemp.substring(0, 1).equals("M")) {
+                            if (dptemp.substring(0, 1).equals("M") == true) {
                                 tval = Integer.parseInt(dptemp.substring(1)) * -1;
                             } else {
                                 tval = Integer.parseInt(dptemp.substring(0));
@@ -198,15 +198,15 @@ public final class MetarUpdater {
                             continue;
                         }
 
-                        if (token[i].substring(0, 1).equals("M")) {
-                            if (bettertemp) {
+                        if (token[i].substring(0, 1).equals("M") == true) {
+                            if (bettertemp == true) {
                                 continue;
                             }
 
                             temp = token[i].substring(1, 3);
                             dptemp = token[i].substring(4);
 
-                            if (dptemp.substring(0, 1).equals("M")) {
+                            if (dptemp.substring(0, 1).equals("M") == true) {
                                 tval = Integer.parseInt(dptemp.substring(1)) * -1;
                             } else {
                                 tval = Integer.parseInt(dptemp.substring(0));
@@ -227,8 +227,8 @@ public final class MetarUpdater {
                             continue;
                         }
 
-                        if (token[i].startsWith("T")) {
-                            if (token[i].substring(1, 2).equals("W") || token[i].substring(1, 2).equals("E")) // might be TWR or TEM
+                        if (token[i].startsWith("T") == true) {
+                            if (token[i].substring(1, 2).equals("W") == true || token[i].substring(1, 2).equals("E") == true) // might be TWR or TEM
                             {
                                 continue;
                             }
@@ -236,7 +236,7 @@ public final class MetarUpdater {
                             bettertemp = true;
                             tval = Integer.parseInt(token[i].substring(2, 5));
 
-                            if (token[i].substring(1, 2).equals("1")) {
+                            if (token[i].substring(1, 2).equals("1") == true) {
                                 tval *= -1;
                             }
 
@@ -292,16 +292,16 @@ public final class MetarUpdater {
                     try {
                         query = con.createStatement();
                         query.executeUpdate(queryString);
+                        query.close();
                     } catch (SQLException e2) {
+                        query.close();
                         System.err.println("MetarUpdater::Insert error " + e2.getMessage());
                     }
 
-                    query.close();
-
                     Thread.sleep(5000L); // give the ftp some breathing room
                 }
-            } catch (InterruptedException | IOException | SQLException | NumberFormatException e1) {
-                System.err.println("MetarUpdater::Exception error " + e1.getMessage());
+            } catch (InterruptedException | IOException | SQLException | NumberFormatException e3) {
+                System.err.println("MetarUpdater::Exception error " + e3.getMessage());
             }
 
             Thread.yield();

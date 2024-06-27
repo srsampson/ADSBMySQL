@@ -125,7 +125,7 @@ public final class NConverter {
         
         tail = tail.toUpperCase();
         
-        if (!tail.startsWith("N")) {
+        if (tail.startsWith("N") == false) {
             return -1;
         }
 

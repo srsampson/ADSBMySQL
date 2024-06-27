@@ -19,7 +19,8 @@ public final class ADSBDatabase extends Thread {
     private Connection db1;
     private Connection db2;
     private Statement query;
-    private Statement queryt;
+    private Statement querymt;
+    private Statement querytt;
     //
     private Thread database;
     private static boolean EOF;
@@ -71,7 +72,7 @@ public final class ADSBDatabase extends Thread {
 
         /*
          * You need the ODBC MySQL driver library in the same directory you have
-         * the executable JAR file of this program.
+         * the executable JAR file of this program, but under a lib directory.
          */
         try {
             db1 = DriverManager.getConnection(connectionURL, properties);
@@ -123,7 +124,7 @@ public final class ADSBDatabase extends Thread {
 
                 table = con.getTrackUpdatedTable();
 
-                if (!table.isEmpty()) {
+                if (table.isEmpty() == false) {
                     for (Track trk : table) {
                         time = trk.getUpdateTime();
                         trk.setUpdated(false);
@@ -150,11 +151,11 @@ public final class ADSBDatabase extends Thread {
 
                             rs.close();
                             query.close();
-                        } catch (SQLException e) {
+                        } catch (SQLException e3) {
                             try {
                                 if (rs != null)
                                     rs.close();
-                            } catch (SQLException e9) {
+                            } catch (SQLException e4) {
                             }
                             query.close();
                             continue;   // this is not good, so end pass
@@ -286,9 +287,9 @@ public final class ADSBDatabase extends Thread {
                             query = db1.createStatement();
                             query.executeUpdate(queryString);
                             query.close();
-                        } catch (SQLException e) {
+                        } catch (SQLException e5) {
                             query.close();
-                            System.out.println("ADSBDatabase::run query target Error: " + queryString + " " + e.getMessage());
+                            System.out.println("ADSBDatabase::run query target Error: " + queryString + " " + e5.getMessage());
                         }
 
                         if (trk.getUpdatePosition() == true) {
@@ -333,9 +334,9 @@ public final class ADSBDatabase extends Thread {
                                     query = db1.createStatement();
                                     query.executeUpdate(queryString);
                                     query.close();
-                                } catch (SQLException e) {
+                                } catch (SQLException e6) {
                                     query.close();
-                                    System.out.println("ADSBDatabase::run query targetecho Error: " + queryString + " " + e.getMessage());
+                                    System.out.println("ADSBDatabase::run query targetecho Error: " + queryString + " " + e6.getMessage());
                                 }
                             }
                         }
@@ -357,10 +358,10 @@ public final class ADSBDatabase extends Thread {
 
                                 rs.close();
                                 query.close();
-                            } catch (SQLException e) {
+                            } catch (SQLException e7) {
                                 rs.close();
                                 query.close();
-                                System.out.println("ADSBDatabase::run query modestable warn: " + queryString + " " + e.getMessage());
+                                System.out.println("ADSBDatabase::run query modestable warn: " + queryString + " " + e7.getMessage());
                                 continue;   // skip the following
                             }
 
@@ -376,7 +377,7 @@ public final class ADSBDatabase extends Thread {
                             }
                         }
 
-                        if (!trk.getCallsign().equals("")) {
+                        if (trk.getCallsign().equals("") == false) {
                             try {
 
                                 queryString = String.format("SELECT count(1) AS CS FROM callsign"
@@ -394,10 +395,10 @@ public final class ADSBDatabase extends Thread {
 
                                 rs.close();
                                 query.close();
-                            } catch (SQLException e) {
+                            } catch (SQLException e8) {
                                 rs.close();
                                 query.close();
-                                System.out.println("ADSBDatabase::run query callsign warn: " + queryString + " " + e.getMessage());
+                                System.out.println("ADSBDatabase::run query callsign warn: " + queryString + " " + e8.getMessage());
                                 continue;   // skip the following
                             }
 
@@ -430,16 +431,16 @@ public final class ADSBDatabase extends Thread {
                  */
                 try {
                     Thread.sleep(radarscan);
-                } catch (InterruptedException f) {
+                } catch (InterruptedException e9) {
                 }
             }
-        } catch (NumberFormatException | SQLException e) {
+        } catch (NumberFormatException | SQLException e1) {
             // Probably an I/O Exception
             try {
                 query.close();
-            } catch (SQLException e1) {
+            } catch (SQLException e2) {
             }
-            System.out.println("ADSBDatabase::run Exception in main loop: " + queryString + " " + e.getMessage());
+            System.out.println("ADSBDatabase::run Exception in main loop: " + queryString + " " + e1.getMessage());
             close();
         }
     }
@@ -484,18 +485,29 @@ public final class ADSBDatabase extends Thread {
                     timeout);
 
             try {
-                queryt = db2.createStatement();
-                queryt.executeUpdate(update);
-            } catch (SQLException e) {
-                System.out.println("ADSBDatabase::run targethistory SQL Error: " + update + " " + e.getMessage());
+                querytt = db2.createStatement();
+                querytt.executeUpdate(update);
+                querytt.close();
+            } catch (SQLException tt1) {
+                try {
+                    querytt.close();
+                } catch (SQLException tt2) {
+                }
+                System.out.println("ADSBDatabase::run targethistory SQL Error: " + update + " " + tt1.getMessage());
             }
 
             update = String.format("DELETE FROM target WHERE utcupdate <= %d", timeout);
 
             try {
-                queryt.executeUpdate(update);
-            } catch (SQLException e) {
-                System.out.println("ADSBDatabase:run delete SQL Error: " + update + " " + e.getMessage());
+                querytt = db2.createStatement();
+                querytt.executeUpdate(update);
+                querytt.close();
+            } catch (SQLException tt3) {
+                try {
+                    querytt.close();
+                } catch (SQLException tt4) {
+                }
+                System.out.println("ADSBDatabase:run delete SQL Error: " + update + " " + tt3.getMessage());
             }
         }
     }
@@ -528,14 +540,15 @@ public final class ADSBDatabase extends Thread {
             con.resetMetricCount();
 
             try {
-                queryt.executeUpdate(update);
-                queryt.close();
-            } catch (SQLException e) {
+                querymt = db2.createStatement();
+                querymt.executeUpdate(update);
+                querymt.close();
+            } catch (SQLException mt1) {
                 try {
-                    queryt.close();
-                } catch (SQLException e4) {
+                    querymt.close();
+                } catch (SQLException mt2) {
                 }
-                System.out.println("ADSBDatabase::run metrics SQL Error: " + update + " " + e.getMessage());
+                System.out.println("ADSBDatabase::run metrics SQL Error: " + update + " " + mt1.getMessage());
             }
         }
     }
