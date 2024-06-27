@@ -2,7 +2,7 @@
 This application connects to TCP Port 30003 (or configured alternate port) which is the common Basestation compatible
 port number for ADS-B and Mode-S output data. It's a pretty simple program. Purely a hobby endeavor. This TCP port does not have any fancy data being output, it is just the most common data - heading, altitude, speed, etc.
 
-The use of Basestation output data severly limits this application. I was working on a Mode-S decoder where the raw data could be used in database tables, but that was a bit much for spare time and all that bit-jiggling of ADS-B and Mode-S wore me out.
+The use of Basestation output data severly limits this application. I was working on a Mode-S decoder where the raw data could be used in database tables, but that was a bit much for spare time, and all that bit-jiggling of ADS-B and Mode-S wore me out.
 
 The database is updated by a configurable (1 to 13 seconds) time. Aircraft transmit their position every second, but in most cases it isn't necessary to have that resolution. By default I set 3 seconds, which is adequate for me. In the Track Display program, it reads the database every second, which if you set in 13 seconds here, not a lot of its queries will have new data, but reading is not as database intensive as writing. Every write will update several tables.
 
